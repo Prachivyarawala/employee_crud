@@ -1,3 +1,4 @@
+ using API.Repositories;
  var builder = WebApplication.CreateBuilder(args);
  builder.Services.AddSingleton<IEmployeeRepositories,EmployeeRepositories>();
 
