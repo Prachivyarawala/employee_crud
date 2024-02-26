@@ -7,7 +7,8 @@ namespace API.Repositories
 {
     public class EmployeeRepositories : CommonRepositories,IEmployeeRepositories
     {
-        
+
+
         
     }
 }
