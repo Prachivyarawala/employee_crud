@@ -1,4 +1,7 @@
-var builder = WebApplication.CreateBuilder(args);
+ using API.Repositories;
+ var builder = WebApplication.CreateBuilder(args);
+ builder.Services.AddSingleton<IEmployeeRepositories,EmployeeRepositories>();
+ builder.Services.AddSingleton<IUserRepositories,UserRepositories>();
 
 // Add services to the container.
 
