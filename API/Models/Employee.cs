@@ -27,6 +27,8 @@ namespace API.Models
          [ForeignKey("c_dept_id")]
          public int c_dept_id { get; set; }
         public virtual Dept Department { get; set; }
+
+        public string  c_deptname { get; set; }
         
 
     }
