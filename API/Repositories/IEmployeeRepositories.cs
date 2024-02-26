@@ -9,6 +9,7 @@ namespace API.Repositories
     public interface IEmployeeRepositories
     {
         List<Employee> getAllEmployee();
+        Employee FetchoneEmployee(int id);
         
     }
 }

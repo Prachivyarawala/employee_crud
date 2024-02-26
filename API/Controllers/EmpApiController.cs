@@ -24,5 +24,6 @@ namespace API.Controllers
             return _emprepo.getAllEmployee();
             // int.Parse(HttpContext.User.Claims.First(i =>i.Type == "UserId").Value)
         }
+
     }
 }
