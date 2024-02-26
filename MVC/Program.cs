@@ -1,6 +1,19 @@
-var builder = WebApplication.CreateBuilder(args);
+using API.Repositories;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-// Add services to the container.
+using System;var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<CommonRepositories>();
+builder.Services.AddSingleton<IUserRepositories, UserRepositories>();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(5); // Set your desired timeout for session inactivity
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
