@@ -17,7 +17,7 @@ namespace API.Models
         public virtual User SrsUser { get; set; }
 
         public string c_empname { get; set; }
-        public string c_gender { get; set; }
+        public string c_enpgender { get; set; }
         public string c_shift { get; set; }
      
         public string c_image { get; set; }
