@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MVC.Controllers
 {
-    [Route("[controller]")]
+    // [Route("[controller]")]
     public class AdminController : Controller
     {
         private readonly ILogger<AdminController> _logger;

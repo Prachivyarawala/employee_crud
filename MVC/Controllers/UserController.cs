@@ -11,16 +11,9 @@ using Microsoft.Extensions.Logging;
 
 namespace MVC.Controllers
 {
-    [Route("[controller]")]
+    // [Route("[controller]")]
     public class UserController : Controller
     {
-        private readonly ILogger<UserController> _logger;
-
-        public UserController(ILogger<UserController> logger)
-        {
-            _logger = logger;
-        }
-
         private readonly API.Repositories.IUserRepositories _userrepo;
         private readonly IHttpContextAccessor _httpContextAccessor;
 

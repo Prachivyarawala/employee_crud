@@ -12,7 +12,6 @@ namespace API.Repositories
 {
     public class UserRepositories : CommonRepositories, IUserRepositories
     {
-
         private readonly IHttpContextAccessor _httpContextAccessor;
         public UserRepositories(IHttpContextAccessor httpContextAccessor)
         {
