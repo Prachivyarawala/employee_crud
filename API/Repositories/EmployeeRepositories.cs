@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Models; // Make sure this namespace is correct
-using Npgsql; 
+using Npgsql;
 
 namespace API.Repositories
 {
@@ -27,7 +27,10 @@ namespace API.Repositories
                         c_gender = reader["c_enpgender"].ToString(),
                         c_shift = reader["c_shift"].ToString(),
                         c_dept_id = Convert.ToInt32(reader["c_dept_id"]),
-                        c_deptname = reader["c_deptname"].ToString(),
+                        c_deptname = new API.Models.Employee
+                        {
+                            c_deptname = reader.GetString(7)
+                        }
                         c_image = reader["c_image"].ToString()
                     };
                     employlist.Add(empl);
