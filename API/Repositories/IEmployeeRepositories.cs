@@ -12,5 +12,6 @@ namespace API.Repositories
         Employee FetchoneEmployee();
         void DeletetEmployee(int id);
         void addemp(Employee employee);
+        List<Dept> GetAllDepartments();
     }
 }

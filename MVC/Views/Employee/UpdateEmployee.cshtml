@@ -29,43 +29,53 @@
 </head>
 
 <body>
-  
+
     <h1 id="title">Update Employee</h1>
     <br><br><br>
-<div class="container">
-    <div>
-        <form method="post" id="employeeForm" class="employee-form" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="c_empid">Employee Id:</label>
-                <input type="text" readonly class="form-control" id="c_empid" asp-for="c_empid">
-            </div>
-            <div class="form-group">
-                <label for="c_empname">Employee Name:</label>
-                <input type="text" class="form-control" id="c_empname" asp-for="c_empname">
-            </div>
-            <div class="form-group">
-                <label for="c_enpgender">Gender:</label>
-                <input type="text" class="form-control" id="c_enpgender" asp-for="c_enpgender">
-            </div>
-            <div class="form-group">
-                <label for="c_shift">Shift:</label>
-                <input type="text" class="form-control" id="c_shift" asp-for="c_shift">
-            </div>
-            <div class="form-group">
-                <label for="c_dept_id">Department Id:</label>
-                <input type="text" class="form-control" id="c_dept_id" asp-for="c_dept_id">
-            </div>
-            <div class="form-group">
-                <label for="c_image">Image:</label>
-                <input type="file" class="form-control" id="file" name="file">
-            </div>
-            <img src="@Model.c_image" id="c_image" name="c_image" width="50px" height="50px" />
+    <div class="container">
+        <div>
+            <form method="post" id="employeeForm" class="employee-form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="c_empid">Employee Id:</label>
+                    <input type="text" readonly class="form-control" id="c_empid" asp-for="c_empid">
+                </div>
+                <div class="form-group">
+                    <label for="c_empname">Employee Name:</label>
+                    <input type="text" class="form-control" id="c_empname" asp-for="c_empname">
+                </div>
+                <div class="form-group">
+                    <label>Gender:</label><br>
+                    <label class="radio-label"><input type="radio" id="male" name="gender" value="Male"
+                            asp-for="c_enpgender">Male</label>
+                    <label class="radio-label"><input type="radio" id="female" name="gender" value="Female"
+                            asp-for="c_enpgender">Female</label>
+                </div>
+                <div class="form-group">
+                    <label>Shift:</label><br>
+                    <label class="checkbox-label"><input type="checkbox" id="morning" name="shift" value="Morning"
+                        @(Model.c_shift.Contains("Morning") ? "checked" : "")>Morning</label>
+                    <label class="checkbox-label"><input type="checkbox" id="afternoon" name="shift" value="Afternoon"
+                        @(Model.c_shift.Contains("AfterNoon") ? "checked" : "")>Afternoon</label>
+                </div>
 
-            <div class="form-group">
-                <label for="c_dob">Date of Birth:</label>
-                <input type="date" class="form-control" id="c_dob" asp-for="c_dob">
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+                <div class="form-group">
+                    <label for="c_dept_id">Department:</label>
+                    <select class="form-control" id="c_dept_id" asp-for="c_dept_id" asp-items="ViewBag.department">
+                        <option value="">Select Department</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="c_image">Image:</label>
+                    <input type="file" class="form-control" id="file" name="file">
+                </div>
+                <img src="@Model.c_image" id="c_image" name="c_image" width="50px" height="50px" />
+
+                <div class="form-group">
+                    <label for="c_dob">Date of Birth:</label>
+                    <input type="date" class="form-control" id="c_dob" asp-for="c_dob">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
     </div>
-</div>
+</body>

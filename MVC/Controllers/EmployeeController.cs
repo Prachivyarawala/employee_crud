@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using API.Repositories;
 using API.Models;
@@ -49,8 +50,8 @@ namespace MVC.Controllers
                 return RedirectToAction("Login", "User");
             }
             ViewBag.IsAuthenticated = true;
-            var department = _emprepo.GetAllDepartments();
-            var emp = _emprepo.FetchoneEmployee();
+            var department = _employeeRepositories.GetAllDepartments();
+            var emp = _employeeRepositories.FetchoneEmployee();
             ViewBag.department = new SelectList(department, "c_deptid", "c_deptname",emp.c_deptname.c_deptid);
 
             return View(emp);
