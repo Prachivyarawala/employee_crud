@@ -117,7 +117,7 @@ namespace API.Repositories
                 connection.Open();
                 using var cmd = new NpgsqlCommand("INSERT INTO t_employee(c_userid, c_empname, c_enpgender, c_shift, c_dept_id, c_image, c_dob) VALUES (@c_userid, @c_empname, @c_enpgender, @c_shift, @c_dept_id, @c_image, @c_dob)", connection);
 
-                cmd.Parameters.AddWithValue("@c_userid", _httpContextAccessor.HttpContext.Session.GetInt32("userid"))
+                cmd.Parameters.AddWithValue("@c_userid", _httpContextAccessor.HttpContext.Session.GetInt32("userid"));
                 cmd.Parameters.AddWithValue("@c_empname", employee.c_empname);
                 cmd.Parameters.AddWithValue("@c_enpgender", employee.c_enpgender);
                 cmd.Parameters.AddWithValue("@c_shift", employee.c_shift);
