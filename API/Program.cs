@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
 
 // Register repositories
+builder.Services.AddSingleton<IAdminRepositories, AdminRepositories>();
 builder.Services.AddSingleton<IEmployeeRepositories, EmployeeRepositories>();
 
 // Add services to the container.
