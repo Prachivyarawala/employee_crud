@@ -53,28 +53,31 @@ namespace API.Repositories
             return employlist;
         }
 
-        public void UpdateEmployee(AdminEmployee employee)
-        {
-            try
-            {
-                connection.Open();
-                var cmd = new NpgsqlCommand("UPDATE public.t_employee SET c_empname = @empname, c_shift = @shift, c_dept_id = @deptid WHERE c_empid = @empid", connection);
-                cmd.Parameters.AddWithValue("@empname", employee.c_empname);
-                cmd.Parameters.AddWithValue("@shift", employee.c_shift);
-                cmd.Parameters.AddWithValue("@deptid", employee.c_dept_id);
-                cmd.Parameters.AddWithValue("@empid", employee.c_empid);
-                cmd.ExecuteNonQuery();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-            finally
-            {
-                connection.Close();
-            }
-        }
+        public bool UpdateEmployee(AdminEmployee employee)
+{
+    try
+    {
+        connection.Open();
+        var cmd = new NpgsqlCommand("UPDATE public.t_employee SET c_empname = @empname, c_shift = @shift, c_dept_id = @deptid WHERE c_empid = @empid", connection);
+        cmd.Parameters.AddWithValue("@empid", employee.c_empid);
+        cmd.Parameters.AddWithValue("@empname", employee.c_empname);
+        cmd.Parameters.AddWithValue("@shift", employee.c_shift);
+        cmd.Parameters.AddWithValue("@deptid", employee.c_dept_id);
+        
+        int rowsAffected = cmd.ExecuteNonQuery();
+
+        return rowsAffected > 0;
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex);
+        return false;
+    }
+    finally
+    {
+        connection.Close();
+    }
+}
         public List<Dept> GetAllDepartments()
         {
             var deptList = new List<Dept>();

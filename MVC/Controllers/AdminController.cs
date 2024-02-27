@@ -47,18 +47,12 @@ namespace MVC.Controllers
         {
             try
             {
-                
-                if (ModelState.IsValid)
-                {
-                    _logger.LogInformation("Attempting to update employee.");
-                    _Adminripo.UpdateEmployee(employee);
-                    _logger.LogInformation("Employee updated successfully.");
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                {
-                    _logger.LogWarning("Invalid model state detected while updating employee.");
-                }
+
+                _logger.LogInformation("Attempting to update employee.");
+                _Adminripo.UpdateEmployee(employee);
+                _logger.LogInformation("Employee updated successfully.");
+                return RedirectToAction(nameof(Index));
+
             }
             catch (Exception ex)
             {

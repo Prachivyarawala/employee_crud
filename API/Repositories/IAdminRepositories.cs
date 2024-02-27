@@ -8,7 +8,7 @@ namespace API.Repositories
     public interface IAdminRepositories
     {
         List<AdminEmployee> getAllEmployee();
-        void UpdateEmployee(AdminEmployee employee);
+       bool  UpdateEmployee(AdminEmployee employee);
         List<Dept> GetAllDepartments();
         AdminEmployee FetchByEmpid(int empId);
     }
