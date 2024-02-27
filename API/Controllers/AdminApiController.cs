@@ -29,21 +29,9 @@ namespace API.Controllers
             }
             return Ok(employees);
         }
-        
-        [HttpGet("{id}")]
-        public IActionResult EditEmployee(int id)
-        {
-            var employee = _adminRepo.FetchByEmpid(id);
-            if (employee == null)
-            {
-                return NotFound("Employee not found.");
-            }
-
-            return Ok(employee);
-        }
-
+           
         [HttpPost]
-        public IActionResult EditEmployee(AdminEmployee employee)
+        public IActionResult EditEmployee([FromForm]AdminEmployee employee)
         {
             if (!_adminRepo.UpdateEmployee(employee))
             {
@@ -52,8 +40,17 @@ namespace API.Controllers
 
             return Ok("Employee updated successfully.");
         }
-    
 
-        
+         [HttpGet("departments")]
+        public IActionResult GetAllDepartments()
+        {
+            var departments = _adminRepo.GetAllDepartments();
+            if (departments == null || departments.Count == 0)
+            {
+                return NoContent();
+            }
+
+            return Ok(departments);
+        }
     }
 }
