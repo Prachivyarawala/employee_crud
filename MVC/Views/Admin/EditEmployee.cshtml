@@ -17,7 +17,7 @@
 
 <h1>Edit Employee</h1>
 
-<form asp-action="Edit">
+<form asp-action="EditEmployee" method="post">
     <div class="form-group">
         <label asp-for="c_empname" class="control-label">Employee Name:</label>
         <input asp-for="c_empname" class="form-control" />
@@ -33,7 +33,7 @@
 
     <div class="form-group">
         <label asp-for="c_dept_id" class="control-label">Department:</label>
-        <select id="deptDropdown" asp-for="c_dept_id" class="form-control">
+        <select id="deptDropdown" asp-for="c_dept_id" class="form-control" asp-items="@ViewBag.Departments">
             <option value="">Select Department</option>
         </select>
         <span asp-validation-for="c_dept_id" class="text-danger"></span>
@@ -43,26 +43,3 @@
         <input type="submit" value="Save" class="btn btn-primary" />
     </div>
 </form>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function () {
-        // AJAX call to fetch department data
-        $.ajax({
-            url: '/api/departments', // Replace this with your actual API endpoint
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                // Populate dropdown with department data
-                var dropdown = $('#deptDropdown');
-                dropdown.empty();
-                $.each(data, function (key, entry) {
-                    dropdown.append($('<option></option>').attr('value', entry.c_deptid).text(entry.c_deptname));
-                });
-            },
-            error: function () {
-                console.error('Failed to fetch department data.');
-            }
-        });
-    });
-</script>

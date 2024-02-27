@@ -5,7 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
+using API.Models;
+
 
 namespace MVC.Controllers
 {
@@ -21,15 +24,51 @@ namespace MVC.Controllers
             _logger = logger;
             _Adminripo = Adminripo;
         }
-
+        [HttpGet]
         public IActionResult Index()
         {
-            var allemp =_Adminripo.getAllEmployee();
+            var allemp = _Adminripo.getAllEmployee();
             return View(allemp);
         }
-        public IActionResult EditEmployee()
+        [HttpGet]
+        public IActionResult EditEmployee(int id)
         {
-            return View();
+            var employee = _Adminripo.FetchByEmpid(id);
+            if (employee == null)
+            {
+                return NotFound();
+            }
+            var departments = _Adminripo.GetAllDepartments();
+            ViewBag.Departments = new SelectList(departments, "c_deptid", "c_deptname", employee.c_deptname.c_deptid);
+            return View(employee);
+        }
+        [HttpPost]
+        public IActionResult EditEmployee(AdminEmployee employee)
+        {
+            try
+            {
+                
+                if (ModelState.IsValid)
+                {
+                    _logger.LogInformation("Attempting to update employee.");
+                    _Adminripo.UpdateEmployee(employee);
+                    _logger.LogInformation("Employee updated successfully.");
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    _logger.LogWarning("Invalid model state detected while updating employee.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating employee");
+                ModelState.AddModelError("", "An error occurred while updating the employee. Please try again later.");
+            }
+            // If the execution reaches here, there was an error or validation issue, so return the view with appropriate data
+            var departments = _Adminripo.GetAllDepartments();
+            ViewBag.Departments = new SelectList(departments, "c_deptid", "c_deptname", employee.c_dept_id);
+            return View(employee);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
