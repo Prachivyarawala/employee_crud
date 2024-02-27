@@ -20,6 +20,11 @@
 
 <form asp-action="EditEmployee" method="post" id="employeeForm">
     <div class="form-group">
+        <label asp-for="c_empid" class="control-label">Employee id:</label>
+        <input asp-for="c_empid" readonly class="form-control" />
+  
+    </div>
+    <div class="form-group">
         <label asp-for="c_empname" class="control-label">Employee Name:</label>
         <input asp-for="c_empname" class="form-control" />
         <span asp-validation-for="c_empname" class="text-danger"></span>
@@ -73,7 +78,6 @@
                 if (!response.ok) {
                     throw new Error('Failed to updated employee.');
                 }
-                return response.text();
             })
             .then(data => {
                 console.log(data);
