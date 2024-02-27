@@ -25,9 +25,10 @@
                         <td>@employee.c_empid</td>
                         <td>@employee.c_empname</td>
                         <td>@employee.c_shift</td>
-                        <td>@employee.c_deptname.c_deptname</td>
+                        <td>@employee.c_deptname.c_deptid</td>
                         <td>
                             <form asp-action="EditEmployee" asp-controller="Admin" method="get" >
+                                <input type="hidden" name="id" value="@employee.c_empid"/>
                                 <button type="submit" class="btn btn-primary">Edit</button>
                             </form>
                         </td>
@@ -37,4 +38,3 @@
         </table>
     </div>
 </div>
-@* asp-route-id="@employee.c_empid" *@

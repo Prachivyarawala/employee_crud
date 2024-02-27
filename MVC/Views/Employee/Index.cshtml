@@ -41,12 +41,12 @@
                         <td>@Model.c_empid</td>
                         <td>@Model.c_empname</td>
                         <td>@Model.c_enpgender</td>
-                        <td>@Model.c_shift</td>
+                        <td>@string.Join(",",Model.c_shift)</td>
                         <td>@Model.c_dept_id</td>
                         <td><img src="@Model.c_image" alt="@Model.c_image" width="50px" height="50px"> </td>
                         <td>@Model.c_dob</td>
                         <td>
-                            <form asp-action="delete" asp-controller="Employee"
+                            <form asp-action="DeleteEmployee" asp-controller="Employee"
                                 onclick="return('are you sure to delete record?')">
                                 <input type="hidden" name="id" value="@Model.c_empid" />
                                 <button type="submit" class="btn btn-danger">Delete</button>

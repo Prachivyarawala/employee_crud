@@ -55,10 +55,10 @@
                 </div>
                 <div class="form-group">
                     <label>Shift:</label><br>
-                    <label class="checkbox-label"><input type="checkbox" id="morning" name="shift" value="Morning"
+                    <label class="checkbox-label"><input type="checkbox" id="morning" name="c_shift" value="Morning"
                         @(Model.c_shift.Contains("Morning") ? "checked" : "")>Morning</label>
-                    <label class="checkbox-label"><input type="checkbox" id="afternoon" name="shift" value="Afternoon"
-                        @(Model.c_shift.Contains("AfterNoon") ? "checked" : "")>Afternoon</label>
+                    <label class="checkbox-label"><input type="checkbox" id="afternoon" name="c_shift" value="Afternoon"
+                        @(Model.c_shift.Contains("Afternoon")? "checked" : "")>Afternoon</label>
                 </div>
 
                 <div class="form-group">
