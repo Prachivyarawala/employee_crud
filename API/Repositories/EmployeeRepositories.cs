@@ -173,5 +173,39 @@ namespace API.Repositories
             return deptList;
         }
 
+
+
+
+        public bool UpdateCity(Employee emp)
+        {
+            try
+            {
+                connection.Open();
+                var cmd = new NpgsqlCommand("UPDATE public.t_citytask SET  c_empid = @empid, c_userid = @userid, c_empname = @empname, c_enpgender = @enpgender, c_shift = @shift, c_dept_id = @deptid, c_image = @image, c_dob = @dob WHERE c_cityid = @cityid", connection);
+                cmd.Parameters.AddWithValue("@empid", emp.c_empid);
+                cmd.Parameters.AddWithValue("@userid",  _httpContextAccessor.HttpContext.Session.GetInt32("userid"));
+                cmd.Parameters.AddWithValue("@empname", emp.c_empname);
+                cmd.Parameters.AddWithValue("@enpgender", emp.c_enpgender);
+                cmd.Parameters.AddWithValue("@shift", emp.c_shift);
+                cmd.Parameters.AddWithValue("@deptid", emp.c_dept_id);
+                cmd.Parameters.AddWithValue("@image", emp.c_image);
+                cmd.Parameters.AddWithValue("@dob", emp.c_dob);
+
+                int rowsAffected = cmd.ExecuteNonQuery();
+
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+
     }
 }
