@@ -26,17 +26,16 @@ namespace API.Models
 
         // Navigation properties for references>
 
-<<<<<<< HEAD
+
          [ForeignKey("c_dept_id")]
          public int c_dept_id { get; set; }
          public virtual Dept c_deptname { get; set; }
         
-=======
+
         [ForeignKey("c_dept_id")]
         public int c_dept_id { get; set; }
         public virtual Dept c_deptname { get; set; }
 
->>>>>>> ab55cbb709f611c13ae6530904a3369e150afdde
 
     }
 }
