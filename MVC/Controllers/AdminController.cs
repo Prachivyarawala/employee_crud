@@ -27,6 +27,10 @@ namespace MVC.Controllers
             var allemp =_Adminripo.getAllEmployee();
             return View(allemp);
         }
+        public IActionResult EditEmployee()
+        {
+            return View();
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
