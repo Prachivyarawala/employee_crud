@@ -59,7 +59,7 @@ namespace API.Repositories
             try
             {
                 connection.Open();
-                var cmd = new NpgsqlCommand("SELECT e.c_empid, e.c_userid, e.c_empname, e.c_enpgender, e.c_shift, e.c_dept_id, e.c_image , d.c_deptname FROM public.t_employee e INNER JOIN public.t_dept d ON e.c_dept_id = d.c_deptid WHERE e.c_userid=@c_userid", connection);
+                var cmd = new NpgsqlCommand("SELECT e.c_empid, e.c_userid, e.c_empname, e.c_enpgender, e.c_shift, e.c_dept_id, e.c_image , e.c_dob, d.c_deptname FROM public.t_employee e INNER JOIN public.t_dept d ON e.c_dept_id = d.c_deptid WHERE e.c_userid=@c_userid", connection);
                 cmd.Parameters.AddWithValue("@c_userid", _httpContextAccessor.HttpContext.Session.GetInt32("userid"));
                 Console.WriteLine("repo . : "+ _httpContextAccessor.HttpContext.Session.GetInt32("userid"));
                 var reader = cmd.ExecuteReader();
@@ -71,6 +71,7 @@ namespace API.Repositories
                     employee.c_shift = reader["c_shift"].ToString();
                     employee.c_dept_id = Convert.ToInt32(reader["c_dept_id"]);
                     employee.c_image = reader["c_image"].ToString();
+                    employee.c_dob = reader.GetDateTime(7);
                     employee.c_deptname = new API.Models.Dept
                     {
                         c_deptid = Convert.ToInt32(reader["c_dept_id"]),
