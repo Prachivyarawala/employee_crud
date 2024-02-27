@@ -52,10 +52,59 @@ namespace MVC.Controllers
             ViewBag.IsAuthenticated = true;
             var department = _employeeRepositories.GetAllDepartments();
             var emp = _employeeRepositories.FetchoneEmployee();
-            ViewBag.department = new SelectList(department, "c_deptid", "c_deptname",emp.c_deptname.c_deptid);
+            ViewBag.department = new SelectList(department, "c_deptid", "c_deptname", emp.c_deptname.c_deptid);
 
             return View(emp);
         }
+
+        [HttpPost]
+        public IActionResult UpdateEmployee(Employee emp, IFormFile? file = null)
+        {
+            var existingEmp = _employeeRepositories.FetchoneEmployee();
+            if (existingEmp == null)
+            {
+                return NotFound();
+            }
+
+            if (file == null || file.Length == 0)
+            {
+                emp.c_image = existingEmp.c_image;
+            }
+            else
+            {
+                var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                var filePath = Path.Combine(folderPath, file.FileName);
+                var fileName = Path.GetFileName(file.FileName);
+
+                if (System.IO.File.Exists(filePath))
+                {
+                    fileName = Guid.NewGuid().ToString() + "_" + fileName;
+                    filePath = Path.Combine(folderPath, fileName);
+                }
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    file.CopyTo(stream);
+                }
+
+                var imageUrl = Path.Combine("/images", fileName);
+                emp.c_image = imageUrl;
+            }
+
+            if (_employeeRepositories.UpdateEmployee(emp))
+            {
+                return Ok();
+            }
+
+            return BadRequest(new { success = false, message = "Failed to update city" });
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
