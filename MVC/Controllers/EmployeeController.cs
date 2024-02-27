@@ -74,7 +74,7 @@ namespace MVC.Controllers
         public IActionResult Addemp(Employee employee, IFormFile file)
         {
             var shift = Request.Form["c_shift"].ToList();
-            employee.c_shift = string.Join(",", shift);
+            employee.c_shift = string.Join(", ", shift);
 
             var department = _employeeRepositories.GetAllDepartments();
             ViewBag.department = new SelectList(department, "c_deptid", "c_deptname");
