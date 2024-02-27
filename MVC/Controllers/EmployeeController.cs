@@ -17,7 +17,7 @@ namespace MVC.Controllers
         private readonly ILogger<EmployeeController> _logger;
         private readonly IEmployeeRepositories _emprepo;
 
-        public EmployeeController(ILogger<EmployeeController> logger,IEmployeeRepositories emprepo)
+        public EmployeeController(ILogger<EmployeeController> logger, IEmployeeRepositories emprepo)
         {
             _logger = logger;
             _emprepo = emprepo;
@@ -28,6 +28,15 @@ namespace MVC.Controllers
             var emp = _emprepo.FetchoneEmployee();
             return View(emp);
         }
+
+
+        [HttpGet]
+        public IActionResult AddEmployee()
+        {
+            _emprepo.
+            return View(emp);
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
