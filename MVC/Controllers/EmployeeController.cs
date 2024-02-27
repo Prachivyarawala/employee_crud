@@ -29,14 +29,81 @@ namespace MVC.Controllers
         [HttpGet]
         public IActionResult Addemp()
         {
+            var department = _employeeRepositories.GetAllDepartments();
+            ViewBag.department = new SelectList(department, "c_deptid", "c_deptname");
 
             return View();
         }
 
+        // [HttpPost]
+        // public IActionResult Addemp(Employee employee, IFormFile file)
+        // {
+        //     // string department = Request.Form["c_dept_id"].ToString();
+        //     // employee.c_dept_id = department;
+
+        //     var shift = Request.Form["c_shift"].ToList();
+        //     employee.c_shift = string.Join(",", shift);
+
+
+
+
+        //     var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+
+        //     if (!Directory.Exists(folderPath))
+        //     {
+        //         Directory.CreateDirectory(folderPath);
+        //     }
+
+        //     var fileName = Path.GetFileName(file.FileName);
+        //     var filePath = Path.Combine(folderPath, fileName);
+
+        //     using (var stream = new FileStream(filePath, FileMode.Create))
+        //     {
+        //         file.CopyTo(stream);
+        //     }
+
+        //     var imageUrl = Path.Combine("/images", fileName);
+        //     employee.c_image = imageUrl;
+
+
+        //     _employeeRepositories.addemp(employee);
+        //     return RedirectToAction("Index");
+        // }
+
         [HttpPost]
-        public IActionResult Addemp(Employee employee)
+        public IActionResult Addemp(Employee employee, IFormFile file)
         {
+            var department = _employeeRepositories.GetAllDepartments();
+            ViewBag.department = new SelectList(department, "c_deptid", "c_deptname");
+
+            // Check if a file is uploaded
+            if (file != null && file.Length > 0)
+            {
+                // Create folder if not exists
+                var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                // Generate unique file name
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                var filePath = Path.Combine(folderPath, fileName);
+
+                // Save the file
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    file.CopyTo(stream);
+                }
+
+                // Set the image URL in the employee object
+                var imageUrl = Path.Combine("/images", fileName);
+                employee.c_image = imageUrl;
+            }
+
+            // Add the employee to the repository
             _employeeRepositories.addemp(employee);
+
             return RedirectToAction("Index");
         }
 
@@ -52,7 +119,7 @@ namespace MVC.Controllers
             ViewBag.IsAuthenticated = true;
             var department = _employeeRepositories.GetAllDepartments();
             var emp = _employeeRepositories.FetchoneEmployee();
-            ViewBag.department = new SelectList(department, "c_deptid", "c_deptname",emp.c_deptname.c_deptid);
+            ViewBag.department = new SelectList(department, "c_deptid", "c_deptname", emp.c_deptname.c_deptid);
 
             return View(emp);
         }
