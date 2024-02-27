@@ -17,7 +17,7 @@ namespace MVC.Controllers
         private readonly ILogger<EmployeeController> _logger;
         private readonly IEmployeeRepositories _emprepo;
 
-        public EmployeeController(ILogger<EmployeeController> logger, IEmployeeRepositories emprepo)
+        public EmployeeController(ILogger<EmployeeController> logger,IEmployeeRepositories emprepo)
         {
             _logger = logger;
             _emprepo = emprepo;
@@ -29,7 +29,11 @@ namespace MVC.Controllers
             return View(emp);
         }
 
-        
+        public IActionResult delete(int id)
+        {
+            _emprepo.DeletetEmployee(id);
+            return RedirectToAction("Index");
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

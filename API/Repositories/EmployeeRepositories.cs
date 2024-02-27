@@ -89,6 +89,31 @@ namespace API.Repositories
         }
 
         
+        public void DeletetEmployee(int id)
+        {
+            try
+            {
+                connection.Open();
+                using var cmd = new NpgsqlCommand("DELETE FROM public.t_employee WHERE c_empid=@c_empid", connection);
+
+                cmd.Parameters.AddWithValue("@c_empid", id);
+
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred while deleting task: " + ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+
+
+
+
 
     }
 }
