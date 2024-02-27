@@ -1,0 +1,84 @@
+@model API.Models.Employee
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Your All Cities</title>
+</head>
+
+<body>
+    <h1>Welcome, @Context.Session.GetInt32("userid"): @Context.Session.GetString("username")!</h1>
+
+    <h1>Your All Cities</h1>
+    @if (Model == null || Model.c_empid == 0)
+    {
+        <p>
+            <a class="btn btn-primary" asp-action="AddEmployee">Add New Employee</a>
+        </p>
+    }
+
+
+    else
+    {
+        <div class="table-container">
+            <table class="table" id="cityTable">
+                <thead>
+                    <tr>
+                        <th>emp id</th>
+                        <th>emp name</th>
+                        <th>emp gender</th>
+                        <th>emp shift</th>
+                        <th>dept id</th>
+                        <th>image</th>
+                        <th>date of birth</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>@Model.c_empid</td>
+                        <td>@Model.c_empname</td>
+                        <td>@Model.c_enpgender</td>
+                        <td>@Model.c_shift</td>
+                        <td>@Model.c_dept_id</td>
+                        <td>@Model.c_image</td>
+                        <td>@Model.c_dob</td>
+                        <td>
+                            <form asp-action="delete" asp-controller="Employee"
+                                onclick="return('are you sure to delete record?')">
+                                <input type="hidden" name="id" value="@Model.c_empid" />
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+
+                            <form asp-action="UpdateEmployee" asp-controller="Employee" method="get">
+                                <input type="hidden" name="id" value="@Model.c_empid" />
+                                <button type="submit" class="btn btn-primary">Edit</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+
+    <script>
+        var inactivityTimeout;
+
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimeout);
+            inactivityTimeout = setTimeout(function () {
+                window.location.href = '/User/Login'; // Redirect to the login page after inactivity
+            }, 300000); // 5 minutes timeout (300,000 milliseconds)
+        }
+
+        // Attach event handlers for user activity (e.g., mousemove, keydown)
+        document.addEventListener('mousemove', resetInactivityTimer);
+        document.addEventListener('keydown', resetInactivityTimer);
+
+        // Initialize the inactivity timer on page load
+        resetInactivityTimer();
+    </script>
+</body>
+
+</html>
