@@ -73,6 +73,9 @@ namespace MVC.Controllers
         [HttpPost]
         public IActionResult Addemp(Employee employee, IFormFile file)
         {
+            var shift = Request.Form["c_shift"].ToList();
+            employee.c_shift = string.Join(",", shift);
+
             var department = _employeeRepositories.GetAllDepartments();
             ViewBag.department = new SelectList(department, "c_deptid", "c_deptname");
 
@@ -101,7 +104,6 @@ namespace MVC.Controllers
                 employee.c_image = imageUrl;
             }
 
-            // Add the employee to the repository
             _employeeRepositories.addemp(employee);
 
             return RedirectToAction("Index");
@@ -163,7 +165,8 @@ namespace MVC.Controllers
                 var imageUrl = Path.Combine("/images", fileName);
                 emp.c_image = imageUrl;
             }
-
+            var shift = Request.Form["c_shift"].ToList();
+            emp.c_shift = string.Join(", ", shift);
             if (_employeeRepositories.UpdateEmployee(emp))
             {
                 return Ok();
@@ -171,7 +174,11 @@ namespace MVC.Controllers
 
             return BadRequest(new { success = false, message = "Failed to update city" });
         }
-
+        public IActionResult DeleteEmployee(int id)
+        {
+            _employeeRepositories.DeletetEmployee(id);
+            return RedirectToAction("Index");
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
