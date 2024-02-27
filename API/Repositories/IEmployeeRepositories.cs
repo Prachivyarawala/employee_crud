@@ -10,6 +10,8 @@ namespace API.Repositories
     {
         List<Employee> getAllEmployee();
         Employee FetchoneEmployee();
+
+        List<Dept> GetAllDepartments();
         
     }
 }

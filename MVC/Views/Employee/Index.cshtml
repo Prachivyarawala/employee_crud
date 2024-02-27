@@ -5,7 +5,6 @@
 
 <head>
     <title>Your All Cities</title>
-    @* <link rel="stylesheet" href="~/css/City.css"> *@
 </head>
 
 <body>
@@ -52,7 +51,7 @@
                                 <button type="submit" class="btn btn-danger">Delete</button>
                             </form>
 
-                            <form asp-action="UpdateCity" asp-controller="Employee" method="get">
+                            <form asp-action="UpdateEmployee" asp-controller="Employee" method="get">
                                 <input type="hidden" name="id" value="@Model.c_empid" />
                                 <button type="submit" class="btn btn-primary">Edit</button>
                             </form>

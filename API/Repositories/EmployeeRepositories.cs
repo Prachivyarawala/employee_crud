@@ -88,6 +88,37 @@ namespace API.Repositories
             return employee;
         }
 
+        public List<Dept> GetAllDepartments()
+        {
+            var deptList = new List<Dept>();
+            try
+            {
+                connection.Open();
+                var cmd = new NpgsqlCommand("SELECT c_deptid, c_deptname FROM public.t_dept", connection);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    var dept = new Dept
+                    {
+
+                        c_deptid = Convert.ToInt32(reader["c_deptid"]),
+                        c_deptname = reader["c_deptname"].ToString()
+                    };
+                    deptList.Add(dept);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            finally
+            {
+                connection.Close();
+            }
+            return deptList;
+        }
+
 
 
     }
