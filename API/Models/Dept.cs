@@ -7,7 +7,7 @@ namespace API.Models
 {
     public class Dept
     {
-        public int c_deptid { get; set; }
-        public string c_deptname { get; set; }
+        public int? c_deptid { get; set; }
+        public string? c_deptname { get; set; }
     }
 }

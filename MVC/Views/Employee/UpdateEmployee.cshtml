@@ -1,0 +1,133 @@
+@model API.Models.Employee
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <style>
+        .city-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .radio-label,
+        .checkbox-label {
+            margin-right: 20px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+    </style>
+
+</head>
+
+<body>
+    <h1>Welcome, @Context.Session.GetInt32("userid"): @Context.Session.GetString("username")!</h1>
+
+    <h1 id="title">Update Employee</h1>
+    <br><br><br>
+    <div class="container">
+        <div>
+            <form method="post" asp-action="UpdateEmployee" asp-controller="Employee" id="employeeForm"
+                class="employee-form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="c_empid">Employee Id:</label>
+                    <input type="text" readonly class="form-control" id="c_empid" asp-for="c_empid">
+                </div>
+                @* <div class="form-group">
+                    <label for="c_userid">User Id:</label>
+                    <input type="text" readonly class="form-control" value="@Context.Session.GetInt32("userid")"
+                        id="c_userid" asp-for="c_userid">
+                </div> *@
+                <div class="form-group">
+                    <label for="c_empname">Employee Name:</label>
+                    <input type="text" class="form-control" id="c_empname" asp-for="c_empname">
+                </div>
+                <div class="form-group">
+                    <label>Gender:</label><br>
+                    <label class="radio-label"><input type="radio" id="male" asp-for="c_enpgender" value="Male"
+                            asp-for="c_enpgender">Male</label>
+                    <label class="radio-label"><input type="radio" id="female" asp-for="c_enpgender" value="Female"
+                            asp-for="c_enpgender">Female</label>
+                </div>
+                <div class="form-group">
+                    <label>Shift:</label><br>
+                    <label class="checkbox-label"><input type="checkbox" id="morning" name="shift" value="Morning"
+                        @(Model.c_shift.Contains("Morning") ? "checked" : "")>Morning</label>
+                    <label class="checkbox-label"><input type="checkbox" id="afternoon" name="shift" value="Afternoon"
+                        @(Model.c_shift.Contains("AfterNoon") ? "checked" : "")>Afternoon</label>
+                </div>
+
+                <div class="form-group">
+                    <label for="c_dept_id">Department:</label>
+                    <select class="form-control" id="c_dept_id" asp-for="c_dept_id" asp-items="ViewBag.department">
+                        <option value="">Select Department</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="c_image">Image:</label>
+                    <input type="file" class="form-control" id="file" name="file">
+                </div>
+                <img src="@Model.c_image" id="c_image" name="c_image" width="50px" height="50px" />
+
+                <div class="form-group">
+                    <label for="c_dob">Date of Birth:</label>
+                    <input type="date" class="form-control" id="c_dob" asp-for="c_dob">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</body>
+<script>
+    document.getElementById('employeeForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        var form = document.getElementById('employeeForm');
+        var formData = new FormData(form);
+
+        var shifts = [];
+        $('input[name="shift"]:checked').each(function () {
+            shifts.push($(this).val());
+        });
+
+        formData.append("c_shift", shifts.join(','));
+        console.log(formData);
+
+        var fileInput = document.getElementById('file');
+        if (fileInput.files.length === 0) {
+            formData.append("file", null);
+        }
+        for (var pair of formData.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
+        }
+
+        fetch('/Employee/UpdateEmployee', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to updated employee.');
+                }
+                return response.text();
+            })
+            .then(data => {
+                console.log(data);
+                alert("Employee updated successfully!");
+                window.location.href = '/Employee/Index';
+            })
+            .catch(error => {
+                console.error('Error updated employee:', error.message);
+                alert("Failed to Update employee.");
+            });
+    });
+
+</script>
+</html>

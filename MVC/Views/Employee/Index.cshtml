@@ -15,7 +15,7 @@
     @if (Model == null || Model.c_empid == 0)
     {
         <p>
-            <a class="btn btn-primary" asp-action="AddEmployee">Add New Employee</a>
+            <a class="btn btn-primary" asp-action="Addemp">Add New Employee</a>
         </p>
     }
 
@@ -43,7 +43,7 @@
                         <td>@Model.c_enpgender</td>
                         <td>@Model.c_shift</td>
                         <td>@Model.c_dept_id</td>
-                        <td>@Model.c_image</td>
+                        <td><img src="@Model.c_image" alt="@Model.c_image" width="50px" height="50px"> </td>
                         <td>@Model.c_dob</td>
                         <td>
                             <form asp-action="delete" asp-controller="Employee"
@@ -52,7 +52,7 @@
                                 <button type="submit" class="btn btn-danger">Delete</button>
                             </form>
 
-                            <form asp-action="UpdateCity" asp-controller="Employee" method="get">
+                            <form asp-action="UpdateEmployee" asp-controller="Employee" method="get">
                                 <input type="hidden" name="id" value="@Model.c_empid" />
                                 <button type="submit" class="btn btn-primary">Edit</button>
                             </form>
