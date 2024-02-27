@@ -27,7 +27,7 @@
                         <td>@employee.c_shift</td>
                         <td>@employee.c_deptname.c_deptname</td>
                         <td>
-                            <form asp-page="/EditEmployee" asp-route-id="@employee.c_empid">
+                            <form asp-action="EditEmployee" asp-controller="Admin" method="get" >
                                 <button type="submit" class="btn btn-primary">Edit</button>
                             </form>
                         </td>
@@ -37,3 +37,4 @@
         </table>
     </div>
 </div>
+@* asp-route-id="@employee.c_empid" *@
