@@ -47,17 +47,22 @@ namespace MVC.Controllers
         {
             try
             {
+                if (_Adminripo.UpdateEmployee(employee))
+                {
+                    Console.WriteLine("updated");
+                    return RedirectToAction(nameof(Index));
 
-                _logger.LogInformation("Attempting to update employee.");
-                _Adminripo.UpdateEmployee(employee);
-                _logger.LogInformation("Employee updated successfully.");
-                return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    return View(employee);
+                }
+
 
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error updating employee");
-                ModelState.AddModelError("", "An error occurred while updating the employee. Please try again later.");
+                Console.WriteLine(ex);
             }
             // If the execution reaches here, there was an error or validation issue, so return the view with appropriate data
             var departments = _Adminripo.GetAllDepartments();
