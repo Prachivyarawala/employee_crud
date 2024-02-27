@@ -100,7 +100,6 @@ namespace API.Repositories
                 {
                     var dept = new Dept
                     {
-
                         c_deptid = Convert.ToInt32(reader["c_deptid"]),
                         c_deptname = reader["c_deptname"].ToString()
                     };
