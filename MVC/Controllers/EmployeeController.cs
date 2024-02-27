@@ -29,15 +29,6 @@ namespace MVC.Controllers
             return View(emp);
         }
 
-
-        [HttpGet]
-        public IActionResult AddEmployee()
-        {
-            _emprepo.
-            return View(emp);
-        }
-
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
