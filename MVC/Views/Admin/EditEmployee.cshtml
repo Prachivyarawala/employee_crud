@@ -9,6 +9,7 @@
         display: block;
         margin-bottom: 5px;
     }
+
     .radio-group input[type="radio"] {
         display: inline-block;
         margin-right: 5px;
@@ -17,23 +18,24 @@
 
 <h1>Edit Employee</h1>
 
-<form asp-action="Edit">
+<form asp-action="EditEmployee" method="post" id="employeeForm">
     <div class="form-group">
         <label asp-for="c_empname" class="control-label">Employee Name:</label>
         <input asp-for="c_empname" class="form-control" />
         <span asp-validation-for="c_empname" class="text-danger"></span>
     </div>
 
-    <div class="form-group radio-group">
-        <label>Shift:</label>
-        <label><input type="radio" asp-for="c_shift" value="Morning" /> Morning</label>
-        <label><input type="radio" asp-for="c_shift" value="Afternoon" /> Afternoon</label>
-        <span asp-validation-for="c_shift" class="text-danger"></span>
+    <div class="form-group">
+        <label>Shift:</label><br>
+        <label class="checkbox-label"><input type="checkbox" id="morning" name="shift" value="Morning"
+            @(Model.c_shift.Contains("Morning") ? "checked" : "")>Morning</label>
+        <label class="checkbox-label"><input type="checkbox" id="afternoon" name="shift" value="Afternoon"
+            @(Model.c_shift.Contains("Afternoon") ? "checked" : "")>Afternoon</label>
     </div>
 
     <div class="form-group">
         <label asp-for="c_dept_id" class="control-label">Department:</label>
-        <select id="deptDropdown" asp-for="c_dept_id" class="form-control">
+        <select id="deptDropdown" asp-for="c_dept_id" class="form-control" asp-items="@ViewBag.Departments">
             <option value="">Select Department</option>
         </select>
         <span asp-validation-for="c_dept_id" class="text-danger"></span>
@@ -44,25 +46,45 @@
     </div>
 </form>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function () {
-        // AJAX call to fetch department data
-        $.ajax({
-            url: '/api/departments', // Replace this with your actual API endpoint
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                // Populate dropdown with department data
-                var dropdown = $('#deptDropdown');
-                dropdown.empty();
-                $.each(data, function (key, entry) {
-                    dropdown.append($('<option></option>').attr('value', entry.c_deptid).text(entry.c_deptname));
-                });
-            },
-            error: function () {
-                console.error('Failed to fetch department data.');
-            }
+    document.getElementById('employeeForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        var form = document.getElementById('employeeForm');
+        var formData = new FormData(form);
+
+        var shifts = [];
+        $('input[name="shift"]:checked').each(function () {
+            shifts.push($(this).val());
         });
+
+        formData.append("c_shift", shifts.join(','));
+        console.log(formData);
+
+       
+        for (var pair of formData.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
+        }
+
+        fetch('/Admin/EditEmployee', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to updated employee.');
+                }
+                return response.text();
+            })
+            .then(data => {
+                console.log(data);
+                alert("Employee updated successfully!");
+                window.location.href = '/Admin/Index';
+            })
+            .catch(error => {
+                console.error('Error updated employee:', error.message);
+                alert("Failed to Update employee.");
+            });
     });
+
 </script>
+
