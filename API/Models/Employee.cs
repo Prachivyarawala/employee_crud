@@ -19,17 +19,24 @@ namespace API.Models
         public string c_empname { get; set; }
         public string c_enpgender { get; set; }
         public string c_shift { get; set; }
-     
+        public DateTime c_dob { get; set; }
         public string c_image { get; set; }
 
         public DateTime c_dob {get; set;}
 
         // Navigation properties for references>
 
+<<<<<<< HEAD
          [ForeignKey("c_dept_id")]
          public int c_dept_id { get; set; }
          public virtual Dept c_deptname { get; set; }
         
+=======
+        [ForeignKey("c_dept_id")]
+        public int c_dept_id { get; set; }
+        public virtual Dept c_deptname { get; set; }
+
+>>>>>>> ab55cbb709f611c13ae6530904a3369e150afdde
 
     }
 }

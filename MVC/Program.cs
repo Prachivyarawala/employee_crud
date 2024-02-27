@@ -11,7 +11,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserRepositories, UserRepositories>();
+<<<<<<< HEAD
 builder.Services.AddScoped<IEmployeeRepositories, EmployeeRepositories>();
+=======
+builder.Services.AddScoped<IAdminRepositories, AdminRepositories>();
+
+>>>>>>> ab55cbb709f611c13ae6530904a3369e150afdde
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(5); // Set your desired timeout for session inactivity
