@@ -52,5 +52,17 @@ namespace API.Controllers
 
             return Ok(departments);
         }
+        [HttpGet("{id}")]
+        public ActionResult<AdminEmployee> GetEmployeeById(int id)
+        {
+            var employee = _adminRepo.FetchByEmpid(id);
+
+            if (employee == null)
+            {
+                return NotFound();
+            }
+
+            return employee;
+        }
     }
 }
