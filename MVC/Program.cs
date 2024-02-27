@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserRepositories, UserRepositories>();
+builder.Services.AddScoped<IEmployeeRepositories, EmployeeRepositories>();
 builder.Services.AddScoped<IAdminRepositories, AdminRepositories>();
 
 builder.Services.AddSession(options =>

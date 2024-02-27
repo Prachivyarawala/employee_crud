@@ -84,7 +84,7 @@ namespace MVC.Controllers
                 {
                     return RedirectToAction("Index", "Admin");
                 }
-                return RedirectToAction("Index", "City");
+                return RedirectToAction("Index", "Employee");
             }
             else
             {
