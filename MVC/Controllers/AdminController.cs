@@ -27,6 +27,7 @@ namespace MVC.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            
             var allemp = _Adminripo.getAllEmployee();
             return View(allemp);
         }

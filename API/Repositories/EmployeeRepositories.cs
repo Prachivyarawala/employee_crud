@@ -43,7 +43,7 @@ namespace API.Repositories
             }
             catch (Exception e)
             {
-                Console.WriteLine(e); // Changed console to Console
+                Console.WriteLine(e); 
             }
             finally
             {
@@ -61,6 +61,7 @@ namespace API.Repositories
                 connection.Open();
                 var cmd = new NpgsqlCommand("SELECT e.c_empid, e.c_userid, e.c_empname, e.c_enpgender, e.c_shift, e.c_dept_id, e.c_image , d.c_deptname FROM public.t_employee e INNER JOIN public.t_dept d ON e.c_dept_id = d.c_deptid WHERE e.c_userid=@c_userid", connection);
                 cmd.Parameters.AddWithValue("@c_userid", _httpContextAccessor.HttpContext.Session.GetInt32("userid"));
+                Console.WriteLine("repo . : "+ _httpContextAccessor.HttpContext.Session.GetInt32("userid"));
                 var reader = cmd.ExecuteReader();
                 if (reader.Read())
                 {

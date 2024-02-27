@@ -1,0 +1,267 @@
+@model API.Models.Employee
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Your All Cities</title>
+</head>
+
+<body>
+    <h1>Welcome, @Context.Session.GetInt32("userid"): @Context.Session.GetString("username")!</h1>
+
+    <p id="status"></p>
+
+    <div class="table-container">
+        <table class="table" id="EmpTable">
+            <thead>
+                <tr>
+                    <th>emp id</th>
+                    <th>emp name</th>
+                    <th>emp gender</th>
+                    <th>emp shift</th>
+                    <th>dept id</th>
+                    <th>image</th>
+                    <th>date of birth</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+    <div class="container">
+        <h1>Edit Employee</h1>
+        <div>
+            <form method="post" asp-action="UpdateEmployee" id="employeeForm" class="employee-form"
+                enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="c_empid">Employee Id:</label>
+                    <input type="text" readonly class="form-control" id="c_empid" name="c_empid">
+                </div>
+
+                <div class="form-group">
+                    <label for="c_empname">Employee Name:</label>
+                    <input type="text" class="form-control" id="c_empname" name="c_empname">
+                </div>
+                <div class="form-group">
+                    <label>Gender:</label><br>
+                    <label class="radio-label"><input type="radio" id="male" name="c_enpgender"
+                            value="Male">Male</label>
+                    <label class="radio-label"><input type="radio" id="female" name="c_enpgender"
+                            value="Female">Female</label>
+                </div>
+                <div class="form-group">
+                    <label>Shift:</label><br>
+                    <label class="checkbox-label"><input type="checkbox" id="morning" name="shift"
+                            value="Morning">Morning</label>
+                    <label class="checkbox-label"><input type="checkbox" id="afternoon" name="shift"
+                            value="Afternoon">Afternoon</label>
+                </div>
+
+                <div class="form-group">
+                    <label for="c_dept_id">Department:</label>
+                    <select class="form-control" id="c_dept_id" name="c_dept_id">
+                        <option value="">Select Department</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="c_image">Image:</label>
+                    <input type="file" class="form-control" id="file" name="file">
+                </div>
+                <img id="c_image" name="c_image" width="50px" height="50px" />
+
+                <div class="form-group">
+                    <label for="c_dob">Date of Birth:</label>
+                    <input type="date" class="form-control" id="c_dob" name="c_dob">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            loadEmp();
+        });
+        loadDept();
+
+        function loadDept() {
+            $.ajax({
+                url: '/AjaxAdmin/GetAllDept',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    var DeptDropdown = $('#c_dept_id');
+                    DeptDropdown.empty();
+                    DeptDropdown.append($('<option>').val('').text('Select Department'));
+
+                    data.forEach(function (dept) {
+                        DeptDropdown.append($('<option>').val(dept.c_deptid).text(dept.c_deptname));
+                    });
+                }
+            });
+        }
+
+        function loadEmp() {
+            $.ajax({
+                url: '/AjaxEmployee/GetEmployee',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    if (data.c_empid == 0) {
+                        $('#status').html('Add Employee Data');
+                    } else {
+                        var EmpTable = $('#EmpTable tbody');
+                        EmpTable.empty();
+                        var emp = data;
+                        var row = `<tr>
+                        <td>${emp.c_empid}</td>
+                        <td>${emp.c_empname}</td>
+                        <td>${emp.c_enpgender}</td>
+                        <td>${emp.c_shift}</td>
+                        <td>${emp.c_deptname.c_deptid}</td>
+                        <td><img src="${emp.c_image}" alt="${emp.c_image}" width="50px" height="50px"></td>
+                        <td>${emp.c_dob}</td>
+                        <td>
+                            <button type="button" onclick="loadData(${emp.c_empid})" class="btn btn-primary">Edit</button>
+                            <button type="button" onclick="deleteEmployee(${emp.c_empid})" class="btn btn-danger">Delete</button>
+
+                        </td>
+                    </tr>`;
+                        EmpTable.append(row);
+                    }
+
+                }
+            });
+        }
+
+        function loadData(id) {
+            $.ajax({
+                url: '/AjaxEmployee/GetEmployee/' + id,
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                    $('#c_empid').val(data.c_empid);
+                    $('#c_empname').val(data.c_empname);
+                    $('input[name="c_enpgender"][value="' + data.c_enpgender + '"]').prop('checked', true);
+                    var shift = data.c_shift.split(',');
+                    shift.forEach(function (shift) {
+                        $('input[name="shift"][value="' + shift + '"]').prop('checked', true);
+                    });
+                    $('#c_dept_id').val(data.c_dept_id);
+                    $('#c_dept_id').change();
+                    $('#c_image').attr('src', data.c_image); // Display the image
+                    $('#c_dob').val(data.c_dob);
+                }
+            });
+        }
+
+        document.getElementById('employeeForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            var form = document.getElementById('employeeForm');
+            var formData = new FormData(form);
+
+            var shifts = [];
+            $('input[name="shift"]:checked').each(function () {
+                shifts.push($(this).val());
+            });
+            formData.delete("c_shift");
+            formData.append("c_shift", shifts.join(','));
+
+            var fileInput = document.getElementById('file');
+            if (fileInput.files.length === 0) {
+                formData.append("file", null);
+            }
+
+            for (var pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
+            var empid = formData.get("c_empid");
+            if (empid && empid > 0) {
+                fetch('/AjaxEmployee/UpdateEmployee', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to updated employee.');
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        console.log(data);
+                        alert("Employee updated successfully!");
+                        window.location.href = '/AjaxEmployee/Index';
+                    })
+                    .catch(error => {
+                        console.error('Error updated employee:', error.message);
+                        alert("Failed to Update employee.");
+                    });
+            }
+            else {
+                fetch('/AjaxEmployee/AddEmployee', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to Add employee.');
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        console.log(data);
+                        alert("Employee Add successfully!");
+                        window.location.href = '/AjaxEmployee/Index';
+                    })
+                    .catch(error => {
+                        console.error('Error Add employee:', error.message);
+                        alert("Failed to Add employee.");
+                    });
+            }
+        });
+
+        function deleteEmployee(id) {
+            $.ajax({
+                url: '/AjaxEmployee/deleteEmployee/' + id,
+                type: 'POST',
+                success: function (response) {
+                    window.location.reload();
+                    console.log("Data deleted successfully");
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error deleting data:", error);
+                }
+            });
+        }
+
+
+
+
+
+
+
+        var inactivityTimeout;
+
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimeout);
+            inactivityTimeout = setTimeout(function () {
+                window.location.href = '/User/Login'; // Redirect to the login page after inactivity
+            }, 300000); // 5 minutes timeout (300,000 milliseconds)
+        }
+
+        // Attach event handlers for user activity (e.g., mousemove, keydown)
+        document.addEventListener('mousemove', resetInactivityTimer);
+        document.addEventListener('keydown', resetInactivityTimer);
+
+        // Initialize the inactivity timer on page load
+        resetInactivityTimer();
+    </script>
+</body>
+
+</html>

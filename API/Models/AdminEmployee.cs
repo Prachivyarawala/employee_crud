@@ -14,7 +14,7 @@ namespace API.Models
         public string c_shift { get; set; }
 
         [ForeignKey("c_dept_id")]
-        public int c_dept_id { get; set; }
-        public virtual Dept c_deptname { get; set; }
+        public int? c_dept_id { get; set; }
+        public virtual Dept? c_deptname { get; set; }
     }
 }

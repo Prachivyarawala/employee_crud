@@ -58,6 +58,11 @@ namespace API.Repositories
             try
             {
                 connection.Open();
+                Console.WriteLine("id : " + employee.c_empid);
+                Console.WriteLine("name : " + employee.c_empname);
+                Console.WriteLine("shif : " + employee.c_shift);
+                Console.WriteLine("dept : " +  employee.c_dept_id);
+
                 var cmd = new NpgsqlCommand("UPDATE public.t_employee SET c_empname = @empname, c_shift = @shift, c_dept_id = @deptid WHERE c_empid = @empid", connection);
                 cmd.Parameters.AddWithValue("@empid", employee.c_empid);
                 cmd.Parameters.AddWithValue("@empname", employee.c_empname);
