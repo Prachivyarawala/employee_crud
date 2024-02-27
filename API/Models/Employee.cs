@@ -22,11 +22,13 @@ namespace API.Models
      
         public string c_image { get; set; }
 
+        public DateTime c_dob {get; set;}
+
         // Navigation properties for references>
 
          [ForeignKey("c_dept_id")]
          public int c_dept_id { get; set; }
-        public virtual Dept c_deptname { get; set; }
+         public virtual Dept c_deptname { get; set; }
         
 
     }
