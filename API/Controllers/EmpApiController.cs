@@ -18,12 +18,9 @@ namespace API.Controllers
             _emprepo = emprepo;
         }
         
-        [HttpGet]
-        public List<Employee> Get()
-        {
-            return _emprepo.getAllEmployee();
-            // int.Parse(HttpContext.User.Claims.First(i =>i.Type == "UserId").Value)
-        }
+
+        
+      
 
     }
 }
