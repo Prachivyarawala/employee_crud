@@ -176,14 +176,13 @@ namespace API.Repositories
 
 
 
-        public bool UpdateCity(Employee emp)
+        public bool UpdateEmployee(Employee emp)
         {
             try
             {
                 connection.Open();
-                var cmd = new NpgsqlCommand("UPDATE public.t_citytask SET  c_empid = @empid, c_userid = @userid, c_empname = @empname, c_enpgender = @enpgender, c_shift = @shift, c_dept_id = @deptid, c_image = @image, c_dob = @dob WHERE c_cityid = @cityid", connection);
+                var cmd = new NpgsqlCommand("UPDATE public.t_employee SET c_empname = @empname, c_enpgender = @enpgender, c_shift = @shift, c_dept_id = @deptid, c_image = @image, c_dob = @dob WHERE c_empid = @empid", connection);
                 cmd.Parameters.AddWithValue("@empid", emp.c_empid);
-                cmd.Parameters.AddWithValue("@userid",  _httpContextAccessor.HttpContext.Session.GetInt32("userid"));
                 cmd.Parameters.AddWithValue("@empname", emp.c_empname);
                 cmd.Parameters.AddWithValue("@enpgender", emp.c_enpgender);
                 cmd.Parameters.AddWithValue("@shift", emp.c_shift);
