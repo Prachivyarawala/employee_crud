@@ -73,7 +73,7 @@ namespace API.Repositories
                     employee.c_deptname = new API.Models.Dept
                     {
                         c_deptid = Convert.ToInt32(reader["c_dept_id"]),
-                        c_deptname = reader.GetString(6)
+                        c_deptname = reader.GetString(7)
                     };
                 }
             }
