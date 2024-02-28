@@ -28,12 +28,10 @@ namespace MVC.Controllers
         public IActionResult Index()
         {
             string username = HttpContext.Session.GetString("username");
-            if (username == null)
+            if (username == null || username != "admin")
             {
-                ViewBag.IsAuthenticated = false;
                 return RedirectToAction("Login", "User");
             }
-            ViewBag.IsAuthenticated = true;
             return View();
         }
 

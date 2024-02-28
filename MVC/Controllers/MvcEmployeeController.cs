@@ -25,7 +25,7 @@ namespace MVC.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.IsAuthenticated = true;
+            
             return View();
         }
 

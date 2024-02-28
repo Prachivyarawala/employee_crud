@@ -31,7 +31,6 @@ namespace MVC.Controllers
             string username = HttpContext.Session.GetString("username");
             if (username == null)
             {
-                ViewBag.IsAuthenticated = false;
                 return RedirectToAction("Login", "User");
             }
             return View();
