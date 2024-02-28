@@ -85,7 +85,8 @@
 
     <script>
         var username = sessionStorage.getItem('userid');
-        if(!username){
+        console.log("userid : " + username);
+        if(username === null){
             window.location.href = '/MvcUser/Login';
         }
         $(document).ready(function () {
@@ -176,7 +177,6 @@
             var form = document.getElementById('employeeForm');
             var formData = new FormData(form);
 
-            
             formData.append("c_userid", username);
             var fileInput = document.getElementById('file');
             if (fileInput.files.length === 0) {
