@@ -156,10 +156,24 @@
                     $('#c_dept_id').val(data.c_dept_id);
                     $('#c_dept_id').change();
                     $('#c_image').attr('src', data.c_image); // Display the image
-                    $('#c_dob').val(data.c_dob);
+
+                    // Parse date if not null
+                    if (data.c_dob) {
+                        // Format the date as YYYY-MM-DD for input type="date"
+                        var dob = new Date(data.c_dob);
+                        var formattedDOB = dob.toISOString().split('T')[0];
+                        $('#c_dob').val(formattedDOB);
+                    } else {
+                        $('#c_dob').val(''); // Clear the date input if date is null
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error loading employee data:', error);
+                    // Handle error (e.g., display error message to user)
                 }
             });
         }
+
 
         document.getElementById('employeeForm').addEventListener('submit', function (event) {
             event.preventDefault();
