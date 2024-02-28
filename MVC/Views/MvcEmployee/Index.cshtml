@@ -160,7 +160,13 @@
                     $('#c_dept_id').val(data.c_dept_id);
                     $('#c_dept_id').change();
                     $('#c_image').attr('src', data.c_image); // Display the image
-                    $('#c_dob').val(data.c_dob);
+                    
+                    var dob = data.c_dob;
+                    if (dob) {
+                     // Assuming 'data.c_dob' is in the format 'YYYY-MM-DD'
+                    var formattedDate = dob.split('T')[0]; // Extract date part
+                     $('#c_dob').val(formattedDate);
+                    }
                 }
             });
         }

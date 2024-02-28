@@ -35,7 +35,6 @@ namespace MVC.Controllers
                 ViewBag.IsAuthenticated = false;
                 return RedirectToAction("Login", "User");
             }
-            ViewBag.IsAuthenticated = true;
             return View();
         }
 
@@ -56,8 +55,13 @@ namespace MVC.Controllers
 
         public IActionResult getemployee()
         {
+            Console.WriteLine("controller ... " + HttpContext.Session.GetInt32("userid"));
+
             var emp = _employeeRepositories.FetchoneEmployee();
-            return View(emp);
+            Console.WriteLine("name" + emp.c_empname);
+            Console.WriteLine("gender : "+ emp.c_enpgender);
+            Console.WriteLine("image : "+ emp.c_image);
+            return Json(emp);
         }
 
 
