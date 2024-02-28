@@ -10,24 +10,24 @@ namespace API.Models
 {
     public class Employee
     {
-        public int c_empid { get; set; }
+        public int? c_empid { get; set; }
 
         [ForeignKey("c_userid")]
-        public int c_userid { get; set; }
-        public virtual User SrsUser { get; set; }
+        public int? c_userid { get; set; }
+        public virtual User? SrsUser { get; set; }
 
         public string c_empname { get; set; }
         public string c_enpgender { get; set; }
         public string c_shift { get; set; }
         public DateTime c_dob { get; set; }
-        public string c_image { get; set; }
+        public string? c_image { get; set; }
 
         // Navigation properties for references>
 
 
          [ForeignKey("c_dept_id")]
-         public int c_dept_id { get; set; }
-         public virtual Dept c_deptname { get; set; }
+         public int? c_dept_id { get; set; }
+         public virtual Dept? c_deptname { get; set; }
         
 
         

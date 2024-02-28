@@ -16,58 +16,87 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IAdminRepositories, AdminRepositories>();
 builder.Services.AddSingleton<IEmployeeRepositories, EmployeeRepositories>();
 builder.Services.AddSingleton<IUserRepositories, UserRepositories>();
+builder.Services.AddScoped<CommonRepositories>();
+builder.Services.AddDistributedMemoryCache();
+
 
 // Add services to the container.
 builder.Services.AddControllers();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
+
+builder.Services.AddSwaggerGen(c => {
     c.AddSecurityDefinition(
-        "Bearer",
-        new OpenApiSecurityScheme
-        {
-            Description = "JWT Authorization header using the Bearer scheme.",
+        "token",
+        new OpenApiSecurityScheme{
             Type = SecuritySchemeType.Http,
-            Scheme = "bearer"
-        });
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
+            BearerFormat = "JWT",
+            Scheme = "Bearer",
+            In = ParameterLocation.Header,
+            Name = "Authorization"
         }
-    });
+    );
+    c.AddSecurityRequirement(
+        new OpenApiSecurityRequirement {
+            {
+                new OpenApiSecurityScheme {
+                    Reference = new OpenApiReference {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "token"
+                    },
+                },
+                Array.Empty<string>()
+            }
+        }
+    );
 });
 
-// Add JWT authentication
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+builder.Services.AddAuthentication(option =>
+{
+    option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}
+).AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
     {
-        options.RequireHttpsMetadata = false;
-        options.SaveToken = true;
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = false,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-        };
+        ValidateIssuer = false,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    };
+});
+
+builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
+{
+    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+}));
+
+
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddAuthentication("MyCookieAuthenticationScheme")
+    .AddCookie("MyCookieAuthenticationScheme", option =>
+    {
+        option.LogoutPath = "/User/Login";
+        option.AccessDeniedPath = "/User/AccessDenied";
+        option.ExpireTimeSpan = TimeSpan.FromMinutes(30); // Set your desired expiration time
     });
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(5); // Set your desired timeout for session inactivity
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -75,8 +104,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthentication(); // Use authentication before authorization
+app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors("corsapp");
+app.UseSession();
+
 app.MapControllers();
 
 app.Run();
