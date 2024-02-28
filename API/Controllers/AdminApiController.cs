@@ -29,9 +29,9 @@ namespace API.Controllers
             }
             return Ok(employees);
         }
-           
+
         [HttpPost]
-        public IActionResult EditEmployee([FromForm]AdminEmployee employee)
+        public IActionResult EditEmployee([FromForm] AdminEmployee employee)
         {
             if (!_adminRepo.UpdateEmployee(employee))
             {
@@ -41,7 +41,7 @@ namespace API.Controllers
             return Ok("Employee updated successfully.");
         }
 
-         [HttpGet("departments")]
+        [HttpGet("departments")]
         public IActionResult GetAllDepartments()
         {
             var departments = _adminRepo.GetAllDepartments();
