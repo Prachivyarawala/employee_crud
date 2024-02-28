@@ -27,6 +27,11 @@ namespace MVC.Controllers
         [Produces("application/json")]
         public IActionResult Index()
         {
+            string username = HttpContext.Session.GetString("username");
+            if (username == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
             return View();
         }
         public IActionResult GetAlldept()
