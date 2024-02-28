@@ -124,11 +124,13 @@
                         field: "c_dept_id",
                         title : "Department",
                         editor: function(container, options) {
+                            var dropdown = $('<select name="' + options.field + '" id="' + options.field + '"></select>').appendTo(container);
                             fetchDepartments(function(deptData) {
-                                var dropdown = $('<select name="' + options.field + '" id="' + options.field + '"></select>').appendTo(container);
                                 $.each(deptData, function(index, dept) {
                                     dropdown.append($('<option></option>').attr('value', dept.c_deptid).text(dept.c_deptname));
                                 });
+                                // Set the selected value
+                                dropdown.val(options.model.c_dept_id);
                             });
                         }
                     },

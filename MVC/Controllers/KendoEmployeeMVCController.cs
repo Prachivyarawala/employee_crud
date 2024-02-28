@@ -57,16 +57,17 @@ namespace MVC.Controllers
                 return NotFound();
             }
             var dept = _employeeRepositories.GetAllDepartments();
-            ViewBag.dept = new SelectList(dept, "c_dept_id", "c_deptname");
+            ViewBag.dept = new SelectList(dept, "c_deptid", "c_deptname", employee.c_dept_id); // Pass the selected department ID
             return View(employee);
         }
+
 
 
         [HttpPost]
         public IActionResult Update(Employee employee)
         {
             Console.WriteLine("call : " + employee.c_dept_id);
-            
+
             if (_employeeRepositories.UpdateEmployee(employee))
             {
                 return Json(new { success = true, message = "Successfully Added", newEmployeeId = employee.c_empid });
