@@ -16,12 +16,14 @@ namespace MVC.Controllers
     // [Route("[controller]")]
     public class KendoEmployeeMVCController : Controller
     {
-        private readonly IAdminRepositories _Adminrepo;
+        // private readonly IAdminRepositories _Adminrepo;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public KendoEmployeeMVCController(IAdminRepositories Adminrepo, IWebHostEnvironment webHostEnvironment)
+        private readonly IEmployeeRepositories _employeeRepositories;
+        public KendoEmployeeMVCController(IEmployeeRepositories employeeRepositories, IWebHostEnvironment webHostEnvironment)
         {
-            _Adminrepo = Adminrepo;
+            // _Adminrepo = Adminrepo;
             _webHostEnvironment = webHostEnvironment;
+            _employeeRepositories = employeeRepositories;
         }
 
         [Produces("application/json")]
@@ -52,7 +54,11 @@ namespace MVC.Controllers
         }
 
 
-        
+        public IActionResult getemployee()
+        {
+            var emp = _employeeRepositories.FetchoneEmployee();
+            return View(emp);
+        }
 
 
 
