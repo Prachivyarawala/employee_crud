@@ -48,7 +48,7 @@ namespace MVC.Controllers
 
         public IActionResult GetAlldept()
         {
-            var dept = _Adminrepo.GetAllDepartments();
+            var dept = _employeeRepositories.GetAllDepartments();
 
             return Json(dept);
         }
