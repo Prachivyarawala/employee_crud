@@ -4,14 +4,14 @@
 <html>
 
 <head>
-    <title>Your All Cities</title>
+    <title>Your all Details</title>
     @* <link rel="stylesheet" href="~/css/City.css"> *@
 </head>
 
 <body>
     <h1>Welcome, @Context.Session.GetInt32("userid"): @Context.Session.GetString("username")!</h1>
 
-    <h1>Your All Cities</h1>
+    <h1>Your all Details</h1>
     @if (Model == null || Model.c_empid == null)
     {
         <p>
