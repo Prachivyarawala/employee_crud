@@ -22,6 +22,12 @@ namespace MVC.Controllers
         }
         public IActionResult Index()
         {
+            string username = HttpContext.Session.GetString("username");
+            if (username == null)
+            {
+                ViewBag.IsAuthenticated = false;
+                return RedirectToAction("Login", "User");
+            }
             var emp = _employeeRepositories.FetchoneEmployee();
             return View(emp);
         }
