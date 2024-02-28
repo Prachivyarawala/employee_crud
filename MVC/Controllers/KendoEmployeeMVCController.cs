@@ -66,6 +66,7 @@ namespace MVC.Controllers
         public IActionResult Update(Employee employee)
         {
             Console.WriteLine("call : " + employee.c_dept_id);
+            
             if (_employeeRepositories.UpdateEmployee(employee))
             {
                 return Json(new { success = true, message = "Successfully Added", newEmployeeId = employee.c_empid });

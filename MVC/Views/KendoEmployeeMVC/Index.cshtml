@@ -38,13 +38,18 @@
                     },
                     destroy: {
                         url: function (data) {
+
                             return "https://localhost:7192/KendoEmployeeMVC/Delete/" + data.c_empid;
+
+                            
                         },
                         type: "POST",
                         dataType: "json"
                     },
                     update: {
-                        url: "https://localhost:7287/crud/Edit",
+
+                        url: "https://localhost:7192/KendoEmployeeMVC/Update",
+
                         type: "POST",
                         dataType: "json"
                     },
@@ -141,18 +146,19 @@
                 filterable: true,
             });
 
-            dataSource.bind("requestEnd", function (e) {
-                if (e.type === "create" || e.type === "update" || e.type === "destroy") {
-                    // Update dropdown after update operation
-                    fetchDepartments(function(deptData) {
-                        var dropdown = $("#c_dept_id");
-                        dropdown.empty();
-                        $.each(deptData, function(index, dept) {
-                            dropdown.append($('<option></option>').attr('value', dept.c_deptid).text(dept.c_deptname));
-                        });
-                    });
-                }
+           dataSource.bind("requestEnd", function (e) {
+    if (e.type === "update") {
+        // Update dropdown after update operation
+        fetchDepartments(function (deptData) {
+            var dropdown = $("#c_dept_id");
+            dropdown.empty();
+            $.each(deptData, function (index, dept) {
+                dropdown.append($('<option></option>').attr('value', dept.c_deptid).text(dept.c_deptname));
             });
+        });
+    }
+});
+
 
             $("#grid").on("click", ".k-grid-cancel-changes", function () {
                 dataSource.cancelChanges();
