@@ -25,7 +25,12 @@ namespace MVC.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.IsAuthenticated = true;
+            string username = HttpContext.Session.GetString("username");
+            if (username == null)
+            {
+                ViewBag.IsAuthenticated = false;
+                return RedirectToAction("Login", "User");
+            }
             return View();
         }
 

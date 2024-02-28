@@ -27,7 +27,12 @@ namespace MVC.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            
+            string username = HttpContext.Session.GetString("username");
+            if (username == null)
+            {
+                ViewBag.IsAuthenticated = false;
+                return RedirectToAction("Login", "User");
+            }
             var allemp = _Adminripo.getAllEmployee();
             return View(allemp);
         }
