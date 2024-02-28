@@ -159,8 +159,9 @@
 
                     // Parse date if not null
                     if (data.c_dob) {
-                        // Format the date as YYYY-MM-DD for input type="date"
+                        // Adjusting the date by subtracting one day
                         var dob = new Date(data.c_dob);
+                        dob.setDate(dob.getDate() + 1);
                         var formattedDOB = dob.toISOString().split('T')[0];
                         $('#c_dob').val(formattedDOB);
                     } else {
@@ -173,7 +174,6 @@
                 }
             });
         }
-
 
         document.getElementById('employeeForm').addEventListener('submit', function (event) {
             event.preventDefault();
