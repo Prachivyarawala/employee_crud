@@ -57,6 +57,8 @@
 
 <script>
     function Login() {
+        var email = $('#Email').val();
+        console.log(email);
         var user = {
             Email: $('#Email').val(),
             Password: $('#Password').val()
@@ -74,7 +76,11 @@
                 sessionStorage.setItem('userid', response.userid);
                 
                 alert('Successfully Logged In!');
-                window.location = '/MvcEmployee/Index';
+                if (response.username === "admin") {
+                    window.location = '/MvcAdmin/Index';
+                } else {
+                    window.location = '/MvcEmployee/Index';
+                }
             },
             error: function (xhr, status, error) {
                 console.error('Login failed:', error);
