@@ -14,23 +14,23 @@
             var dataSource = new kendo.data.DataSource({
                 transport: {
                     read: {
-                        url: "https://localhost:7192/KendoEmployeeMVC/getemployee",
+                        url: "KendoEmployeeMVC/getemployee",
                         dataType: "json"
                     },
                     create: {
-                        url: "https://localhost:7287/crud/AddEmployee",
+                        url: "KendoEmployeeMVC/Add",
                         type: "POST",
                         dataType: "json"
                     },
                     destroy: {
                         url: function (data) {
-                            return "https://localhost:7287/crud/Delete/" + data.c_empid;
+                            return "KendoEmployeeMVC/Delete/" + data.c_empid;
                         },
                         type: "POST",
                         dataType: "json"
                     },
                     update: {
-                        url: "https://localhost:7287/crud/Edit",
+                        url: "KendoEmployeeMVC/Edit",
                         type: "POST",
                         dataType: "json"
                     },

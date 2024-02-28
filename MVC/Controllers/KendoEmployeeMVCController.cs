@@ -63,6 +63,32 @@ namespace MVC.Controllers
             Console.WriteLine("image : "+ emp.c_image);
             return Json(emp);
         }
+         [HttpPost]
+    public IActionResult Add( Employee employee)
+    {
+       
+            _employeeRepositories.addemp(employee);
+            return Json(employee);
+       
+    }
+
+    [HttpPost]
+    public IActionResult Edit( Employee employee)
+    {
+        
+            _employeeRepositories.UpdateEmployee(employee);
+            return Json(employee);
+       
+    }
+
+    [HttpPost]
+    public IActionResult Delete(int id)
+    {
+       
+            _employeeRepositories.DeletetEmployee(id);
+            return Json(id);
+       
+    }
 
 
 
