@@ -14,7 +14,7 @@
             var dataSource = new kendo.data.DataSource({
                 transport: {
                     read: {
-                        url: "https://localhost:7072/getemployee",
+                        url: "https://localhost:7192/KendoEmployeeMVC/getemployee",
                         dataType: "json"
                     },
                     create: {
@@ -43,9 +43,10 @@
                             c_empid: { type: "number", editable: false, nullable: false },
                             c_empname: { type: "string", validation: { required: true } },
                             c_dob: { type: "string", validation: { required: true } },
-                            c_empgender: { type: "string", validation: { required: true } },
+                            c_enpgender: { type: "string", validation: { required: true } },
                             c_shift: { type: "string", validation: { required: true } },
-                            c_empimg: { type: "string" }
+                            c_image: { type: "string" },
+                            c_dept_id : { type: "number" }
                         }
                     }
                 }
@@ -65,7 +66,7 @@
                             $('<input type="radio" name="' + options.field + '" value="Female"/> Female<br>').appendTo(container);
                         },
                         template: function (dataItem) {
-                            return dataItem.c_empgender;
+                            return dataItem.c_enpgender;
                         }
                     },
                     {
@@ -91,7 +92,7 @@
                         }
                     },
                     {
-                        field: "c_empimg",
+                        field: "c_image",
                         title: "Photo",
                         editor: function (container, options) {
                             $('<input name="' + options.field + '" type="file" id="fileInput" />').appendTo(container);
@@ -100,10 +101,14 @@
                             $('#fileInput').change(function () {
                                 var fileName = $(this).val().split('\\').pop();
                                 $('#filePathSpan').text(fileName);
-                                options.model.set("c_empimg", fileName);
+                                options.model.set("c_image", fileName);
                             });
                         },
-                        template: "<img src='/uploads1/#= c_empimg #' alt='City Photo' style='max-width: 100px; max-height: 100px;'/>"
+                        template: "<img src='#= c_image #' alt='City Photo' style='max-width: 100px; max-height: 100px;'/>"
+                    },
+                    {
+                        field: "c_dept_id",
+                        title : "Department"
                     },
                     { command: ["edit", "destroy"], title: "&nbsp;", width: "200px" }
                 ],
