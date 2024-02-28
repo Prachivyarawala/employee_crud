@@ -33,7 +33,6 @@ namespace MVC.Controllers
                 ViewBag.IsAuthenticated = false;
                 return RedirectToAction("Login", "User");
             }
-            ViewBag.IsAuthenticated = true;
             return View();
         }
 
