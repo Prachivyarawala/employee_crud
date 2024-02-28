@@ -14,11 +14,11 @@ using Microsoft.AspNetCore.Http;
 namespace MVC.Controllers
 {
     // [Route("[controller]")]
-    public class KendoMVCController : Controller
+    public class KendoAdminMVCController : Controller
     {
         private readonly IAdminRepositories _Adminrepo;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public KendoMVCController(IAdminRepositories Adminrepo, IWebHostEnvironment webHostEnvironment)
+        public KendoAdminMVCController(IAdminRepositories Adminrepo, IWebHostEnvironment webHostEnvironment)
         {
             _Adminrepo = Adminrepo;
             _webHostEnvironment = webHostEnvironment;
