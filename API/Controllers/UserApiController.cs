@@ -11,7 +11,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using System.Net.Http.Json;
-using Microsoft.AspNetCore.Http;
+
+
+
 
 namespace API.Controllers
 {
@@ -23,6 +25,8 @@ namespace API.Controllers
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
+
+
         public UserApiController(IUserRepositories userrepo, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _userrepo = userrepo;
@@ -32,25 +36,25 @@ namespace API.Controllers
 
         [HttpPost]
         [Route("Login")]
-        public IActionResult Login([FromForm] LoginRequest request)
+        public IActionResult Login([FromBody] LoginRequest request)
         {
             try
             {
                 User loginUser = _userrepo.Login(request.Email, request.Password);
                 if (loginUser != null)
                 {
-                    HttpContext.Session.SetInt32("userid", loginUser.c_userid); // Assuming c_userid is int
+                    HttpContext.Session.SetInt32("userid", loginUser.c_userid.GetValueOrDefault());
                     HttpContext.Session.SetString("username", loginUser.c_username);
 
-                    var claims = new List<Claim>
+                    var claims = new[]
                     {
-                        new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
-                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                        new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                        new Claim("userid", loginUser.c_userid.ToString()),
-                        new Claim("username", loginUser.c_username),
-                        new Claim("email", loginUser.c_useremail)
-                    };
+                new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
+                new Claim("userid", loginUser.c_userid.ToString()),
+                new Claim("username", loginUser.c_username),
+                new Claim("email", loginUser.c_useremail)
+            };
 
                     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
                     var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -77,13 +81,67 @@ namespace API.Controllers
 
         [HttpPost]
         [Route("Register")]
-        public IActionResult Register([FromForm] User User)
+        public IActionResult Register([FromBody] User User)
         {
             bool ans = _userrepo.Register(User);
             return Ok(ans);
         }
+        [HttpGet("{id}")]
+        public IActionResult GetUserById(int id)
+        {
+            var user = _userrepo.GetOne(id);
+            if (user == null)
+            {
+                return NotFound(); // User not found
+            }
+            return Ok(user);
+        }
 
-        // Other actions...
+        [HttpPost("Update/{id}")]
+        [Consumes("multipart/form-data")]
+        public IActionResult UpdateUser(int id, [FromForm] User user)
+        {
+            var existingUser = _userrepo.GetOne(id);
+            if (existingUser == null)
+            {
+                return NotFound(); // User not found
+            }
+
+            // Update user details with the form data
+            existingUser.c_username = user.c_username;
+            existingUser.c_useremail = user.c_useremail;
+            existingUser.c_userpassword = user.c_userpassword;
+
+            // Update other properties as needed
+
+            // Save the updated user details
+            _userrepo.Update(existingUser);
+
+            return Ok(existingUser);
+        }
+
+        // [Authorize]
+        // [HttpGet]
+        // [Route("SecureEndpoint")]
+        // public IActionResult SecureEndpoint()
+        // {
+        //     // Authorized endpoint logic goes here
+        //     var userIdClaim = User.FindFirst("Userid"); // Corrected claim name
+        //     if (userIdClaim != null)
+        //     {
+        //         var userId = userIdClaim.Value;
+        //         return Ok($"This is a secure endpoint. UserId: {userId}");
+        //     }
+        //     else
+        //     {
+        //         return BadRequest("UserId claim not found in token");
+        //     }
+        // }
+
+
 
     }
+
+
+
 }
