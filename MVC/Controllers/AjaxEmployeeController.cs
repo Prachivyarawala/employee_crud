@@ -74,13 +74,11 @@ namespace MVC.Controllers
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                 var filePath = Path.Combine(folderPath, fileName);
 
-                // Save the file
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     file.CopyTo(stream);
                 }
 
-                // Set the image URL in the employee object
                 var imageUrl = Path.Combine("/images", fileName);
                 employee.c_image = imageUrl;
             }
