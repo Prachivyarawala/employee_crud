@@ -10,6 +10,20 @@
 
 @section Scripts {
     <script>
+        // Define fetchDepartments function outside of document.ready
+        function fetchDepartments(callback) {
+            $.ajax({
+                url: "https://localhost:7192/KendoEmployeeMVC/GetAlldept",
+                dataType: "json",
+                success: function(deptData) {
+                    callback(deptData);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error fetching department data:", error);
+                }
+            });
+        }
+
         $(document).ready(function () {
             var dataSource = new kendo.data.DataSource({
                 transport: {
@@ -18,19 +32,19 @@
                         dataType: "json"
                     },
                     create: {
-                        url: "https://localhost:7287/crud/AddEmployee",
+                        url: "https://localhost:7192/KendoEmployeeMVC/AddEmployee",
                         type: "POST",
                         dataType: "json"
                     },
                     destroy: {
                         url: function (data) {
-                            return "https://localhost:7287/crud/Delete/" + data.c_empid;
+                            return "https://localhost:7192/KendoEmployeeMVC/Delete/" + data.c_empid;
                         },
                         type: "POST",
                         dataType: "json"
                     },
                     update: {
-                        url: "https://localhost:7287/crud/Edit",
+                        url: "https://localhost:7192/KendoEmployeeMVC/Update",
                         type: "POST",
                         dataType: "json"
                     },
@@ -108,7 +122,15 @@
                     },
                     {
                         field: "c_dept_id",
-                        title : "Department"
+                        title : "Department",
+                        editor: function(container, options) {
+                            fetchDepartments(function(deptData) {
+                                var dropdown = $('<select name="' + options.field + '" id="' + options.field + '"></select>').appendTo(container);
+                                $.each(deptData, function(index, dept) {
+                                    dropdown.append($('<option></option>').attr('value', dept.c_deptid).text(dept.c_deptname));
+                                });
+                            });
+                        }
                     },
                     { command: ["edit", "destroy"], title: "&nbsp;", width: "200px" }
                 ],
@@ -121,7 +143,14 @@
 
             dataSource.bind("requestEnd", function (e) {
                 if (e.type === "create" || e.type === "update" || e.type === "destroy") {
-                    dataSource.read();
+                    // Update dropdown after update operation
+                    fetchDepartments(function(deptData) {
+                        var dropdown = $("#c_dept_id");
+                        dropdown.empty();
+                        $.each(deptData, function(index, dept) {
+                            dropdown.append($('<option></option>').attr('value', dept.c_deptid).text(dept.c_deptname));
+                        });
+                    });
                 }
             });
 
