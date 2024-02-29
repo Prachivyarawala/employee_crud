@@ -44,9 +44,16 @@
                         dataType: "json"
                     },
                     update: {
-                        url: "https://localhost:7192/KendoEmployeeMVC/Update",
+                        url: function (data) {
+                            return "https://localhost:7192/KendoEmployeeMVC/Update/" + data.c_empid;
+                        },
                         type: "POST",
-                        dataType: "json"
+                        dataType: "json",
+                        data: function (data) {
+                            // Convert the date field to the correct format
+                            data.c_dob = kendo.toString(data.c_dob, "yyyy-MM-dd");
+                            return data;
+                        }
                     },
                 },
                 pageSize: 15,
@@ -56,7 +63,7 @@
                         fields: {
                             c_empid: { type: "number", editable: false, nullable: false },
                             c_empname: { type: "string", validation: { required: true } },
-                            c_dob: { type: "string", validation: { required: true } },
+                            c_dob: { type: "date", validation: { required: true } },
                             c_enpgender: { type: "string", validation: { required: true } },
                             c_shift: { type: "string", validation: { required: true } },
                             c_image: { type: "string" },
@@ -132,6 +139,14 @@
                                 // Set the selected value
                                 dropdown.val(options.model.c_dept_id);
                             });
+                        }
+                    },
+                    {
+                        field: "c_dob",
+                        title: "Date of Birth",
+                        format: "{0:dd/MM/yyyy}", // Date format
+                        editor: function(container, options) {
+                            $('<input name="' + options.field + '" />').appendTo(container).kendoDatePicker();
                         }
                     },
                     { command: ["edit", "destroy"], title: "&nbsp;", width: "200px" }
