@@ -10,8 +10,8 @@ namespace API.Repositories
     {
         List<Employee> getAllEmployee();
         Employee FetchoneEmployee();
-        void DeletetEmployee(int id);
-        void addemp(Employee employee);
+        bool DeletetEmployee(int id);
+        bool addemp(Employee employee);
         bool UpdateEmployee(Employee emp);
         List<Dept> GetAllDepartments();
     }

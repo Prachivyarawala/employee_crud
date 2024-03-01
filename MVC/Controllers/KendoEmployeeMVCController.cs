@@ -77,6 +77,41 @@ namespace MVC.Controllers
                 return Json(new { success = false, message = "Not Inserted!!" });
             }
         }
+        [HttpPost]
+        public IActionResult AddEmployee(Employee employee)
+        {
+            Console.WriteLine("call : " + employee.c_dept_id);
+
+            if (_employeeRepositories.addemp(employee))
+            {
+                return Json(new { success = true, message = "Successfully Added", newEmployeeId = employee.c_empid });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Not Inserted!!" });
+            }
+        }
+        [HttpPost]
+public IActionResult Delete(int id)
+{
+    try
+    {
+        if (_employeeRepositories.DeletetEmployee(id))
+        {
+            return Json(new { success = true, message = "Successfully Deleted" });
+        }
+        else
+        {
+            return Json(new { success = false, message = "Deletion Failed" });
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("An error occurred while deleting employee: " + ex.Message);
+        return Json(new { success = false, message = "An error occurred while deleting employee" });
+    }
+}
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

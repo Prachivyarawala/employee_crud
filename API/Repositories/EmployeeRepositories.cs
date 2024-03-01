@@ -91,7 +91,7 @@ namespace API.Repositories
         }
 
 
-        public void DeletetEmployee(int id)
+        public bool DeletetEmployee(int id)
         {
             try
             {
@@ -101,10 +101,12 @@ namespace API.Repositories
                 cmd.Parameters.AddWithValue("@c_empid", id);
 
                 cmd.ExecuteNonQuery();
+                 return true;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("An error occurred while deleting task: " + ex.Message);
+                return false;
             }
             finally
             {
@@ -112,7 +114,7 @@ namespace API.Repositories
             }
         }
 
-        public void addemp(Employee employee)
+        public bool addemp(Employee employee)
         {
             try
             {
@@ -127,10 +129,12 @@ namespace API.Repositories
                 cmd.Parameters.AddWithValue("@c_image", employee.c_image);
                 cmd.Parameters.AddWithValue("@c_dob", employee.c_dob);
                 cmd.ExecuteNonQuery();
+                return true;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("An error occurred while adding task: " + ex.Message);
+                return false;
             }
             finally
             {
