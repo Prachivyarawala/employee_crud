@@ -38,7 +38,7 @@ namespace API.Controllers
                 return BadRequest("Failed to update employee.");
             }
 
-            return Ok("Employee updated successfully.");
+            return Ok(employee);
         }
 
         [HttpGet("departments")]

@@ -8,14 +8,18 @@ using API.Models;
 
 namespace API.Controllers
 {
+
     [ApiController]
     //[Route("api/[controller]")]
     public class EmpApiController : ControllerBase
     {
         private readonly IEmployeeRepositories _employeeRepositories;
-        public EmpApiController(IEmployeeRepositories employeeRepositories)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public EmpApiController(IEmployeeRepositories employeeRepositories, IHttpContextAccessor httpContextAccessor)
         {
             _employeeRepositories = employeeRepositories;
+            _httpContextAccessor = httpContextAccessor;
         }
 
 
@@ -29,18 +33,26 @@ namespace API.Controllers
         }
 
         [HttpPut("UpdateEmployee")]
-        public IActionResult UpdateEmployee(int id,[FromForm] Employee? emp = null, IFormFile? file = null)
+        public IActionResult UpdateEmployee(int id, [FromForm] Employee? emp = null, IFormFile? file = null)
         {
-            var existingEmp = _employeeRepositories.FetchoneEmployee();
-            if (existingEmp == null)
-            {
-                return NotFound();
-            }
+            // _httpContextAccessor.HttpContext.Session.SetInt32("userid" , id);
+            // var existingEmp = _employeeRepositories.FetchoneEmployee();
+            // if (existingEmp == null)
+            // {
+            //     return NotFound();
+            // }
 
+            Console.WriteLine("empid : " + emp.c_empid);
+            Console.WriteLine("empname : " + emp.c_empname);
+            Console.WriteLine("emp gender : " + emp.c_enpgender);
+            Console.WriteLine("emp shift : " + emp.c_shift);
+            Console.WriteLine("emp dob : " + emp.c_dob);
+            Console.WriteLine("emp dept id : " + emp.c_dept_id);
+            
             if (file == null || file.Length == 0)
             {
                 Console.WriteLine("nulllllllllll");
-                emp.c_image = existingEmp.c_image;
+                // emp.c_image = existingEmp.c_image;
             }
             else
             {
@@ -82,31 +94,32 @@ namespace API.Controllers
         [HttpPost("Addemp")]
         public IActionResult Addemp([FromForm] Employee emp, IFormFile file)
         {
-           
-                var folderPath = @"..\MVC\wwwroot\images";
 
-                if (!Directory.Exists(folderPath))
-                {
-                    Directory.CreateDirectory(folderPath);
-                }
 
-                var filePath = Path.Combine(folderPath, file.FileName);
-                var fileName = Path.GetFileName(file.FileName);
+            var folderPath = @"..\MVC\wwwroot\images";
 
-                if (System.IO.File.Exists(filePath))
-                {
-                    fileName = Guid.NewGuid().ToString() + "_" + fileName;
-                    filePath = Path.Combine(folderPath, fileName);
-                }
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
 
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    file.CopyTo(stream);
-                }
+            var filePath = Path.Combine(folderPath, file.FileName);
+            var fileName = Path.GetFileName(file.FileName);
 
-                var imageUrl = Path.Combine("/images", fileName);
-                emp.c_image = imageUrl;
-            
+            if (System.IO.File.Exists(filePath))
+            {
+                fileName = Guid.NewGuid().ToString() + "_" + fileName;
+                filePath = Path.Combine(folderPath, fileName);
+            }
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                file.CopyTo(stream);
+            }
+
+            var imageUrl = Path.Combine("/images", fileName);
+            emp.c_image = imageUrl;
+
             var shift = Request.Form["c_shift"].ToList();
             emp.c_shift = string.Join(", ", shift);
             HttpContext.Session.SetInt32("userid", emp.c_userid.GetValueOrDefault());

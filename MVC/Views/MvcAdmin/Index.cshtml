@@ -1,4 +1,3 @@
-
 @model API.Models.AdminEmployee
 
 @{
@@ -65,8 +64,10 @@
 <script>
     $(document).ready(function () {
         loadEmp();
+
     });
     loadDept();
+
     function loadEmp() {
         $.ajax({
             url: 'https://localhost:7072/api/AdminApi',
@@ -77,22 +78,24 @@
                 EmpTable.empty();
                 data.forEach(function (emp) {
                     var row = `<tr>
-                        <td>${emp.c_empid}</td>
-                        <td>${emp.c_empname}</td>
-                        <td>${emp.c_shift}</td>
-                        <td>${emp.c_deptname.c_deptname}</td>
-                        <td>
-                            <button type="button" onclick="loadEmployee(${emp.c_empid})" class="btn btn-primary">Edit</button>
-                        </td>
-                    </tr>`;
+                    <td>${emp.c_empid}</td>
+                    <td>${emp.c_empname}</td>
+                    <td>${emp.c_shift}</td>
+                    <td>${emp.c_deptname.c_deptname}</td>
+                    <td>
+                        <button type="button" onclick="loadEmployee(${emp.c_empid})" class="btn btn-primary">Edit</button>
+                    </td>
+                </tr>`;
                     EmpTable.append(row);
                 });
             }
         });
     }
 
-  
+
+
     function loadEmployee(employeeId) {
+        loadDept();
         $.ajax({
             url: 'https://localhost:7072/api/AdminApi/' + employeeId,
             type: 'GET',
@@ -108,6 +111,7 @@
                 $('#c_dept_id').change();
             }
         });
+
     }
 
     function loadDept() {
@@ -158,7 +162,7 @@
             .then(data => {
                 console.log(data);
                 alert("Employee updated successfully!");
-                window.location.href = '/AjaxAdmin/Index';
+                window.location.href = '/MvcAdmin/Index';
             })
             .catch(error => {
                 console.error('Error updated employee:', error.message);

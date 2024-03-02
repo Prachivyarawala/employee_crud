@@ -6,27 +6,31 @@ using System.Threading.Tasks;
 using API.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 using API.Models;
-using System.Globalization;
-using System.Diagnostics.CodeAnalysis;
+
+
 namespace MVC.Controllers
 {
-    public class MvcAdminController : Controller
+    // [Route("[controller]")]
+    public class KendoApiEmployeeController : Controller
     {
-        private readonly ILogger<MvcAdminController> _logger;
-        private readonly IAdminRepositories _adminrepo;
+        private readonly ILogger<KendoApiEmployeeController> _logger;
+        private readonly IEmployeeRepositories _empripo;
 
-        public MvcAdminController(ILogger<MvcAdminController> logger, IAdminRepositories adminrepo)
+
+        public KendoApiEmployeeController(ILogger<KendoApiEmployeeController> logger, IEmployeeRepositories empripo)
         {
             _logger = logger;
-            _adminrepo = adminrepo;
+            _empripo = empripo;
         }
-
         [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
+
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

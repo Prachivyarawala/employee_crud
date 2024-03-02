@@ -23,5 +23,7 @@ namespace API.Repositories
 
                 connection = new NpgsqlConnection(myConfig.GetConnectionString("DefaultConnection"));
         }
+
+        
     }
 }

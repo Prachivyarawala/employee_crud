@@ -14,41 +14,36 @@ namespace API.Repositories
             var employlist = new List<AdminEmployee>();
             try
             {
-
-                connection.Open();
-
-                // Create and execute the SQL command
-                var cmd = new NpgsqlCommand("SELECT e.c_empid, e.c_empname, e.c_shift, e.c_dept_id, d.c_deptname FROM public.t_employee e INNER JOIN public.t_dept d ON e.c_dept_id = d.c_deptid", connection);
-                var reader = cmd.ExecuteReader();
-
-                // Read data from the result set
-                while (reader.Read())
+                using (var connection = new NpgsqlConnection("server=cipg01;Port=5432;Database=Group_H;User Id=postgres;Password=123456;"))
                 {
-                    var empl = new AdminEmployee
+                    connection.Open();
+                    var cmd = new NpgsqlCommand("SELECT e.c_empid, e.c_empname, e.c_shift, e.c_dept_id, d.c_deptname FROM public.t_employee e INNER JOIN public.t_dept d ON e.c_dept_id = d.c_deptid", connection);
+                    using (var reader = cmd.ExecuteReader())
                     {
-
-                        c_empid = Convert.ToInt32(reader["c_empid"]),
-                        c_empname = reader["c_empname"].ToString(),
-                        c_shift = reader["c_shift"].ToString(),
-                        c_dept_id = Convert.ToInt32(reader["c_dept_id"]),
-
-                        c_deptname = new Dept
+                        while (reader.Read())
                         {
-                            c_deptid = Convert.ToInt32(reader["c_dept_id"]),
-                            c_deptname = reader["c_deptname"].ToString()
+                            var empl = new AdminEmployee
+                            {
+                                c_empid = Convert.ToInt32(reader["c_empid"]),
+                                c_empname = reader["c_empname"].ToString(),
+                                c_shift = reader["c_shift"].ToString(),
+                                c_dept_id = Convert.ToInt32(reader["c_dept_id"]),
+                                c_deptname = new Dept
+                                {
+                                    c_deptid = Convert.ToInt32(reader["c_dept_id"]),
+                                    c_deptname = reader["c_deptname"].ToString()
+                                }
+                            };
+                            employlist.Add(empl); // Add employee object to the list
                         }
-                    };
-                    employlist.Add(empl); // Add employee object to the list
+                    }
                 }
             }
             catch (Exception e)
             {
+                // Log the exception
                 Console.WriteLine(e);
                 throw;
-            }
-            finally
-            {
-                connection.Close();
             }
             return employlist;
         }
@@ -57,30 +52,25 @@ namespace API.Repositories
         {
             try
             {
-                connection.Open();
-                Console.WriteLine("id : " + employee.c_empid);
-                Console.WriteLine("name : " + employee.c_empname);
-                Console.WriteLine("shif : " + employee.c_shift);
-                Console.WriteLine("dept : " +  employee.c_dept_id);
+                using (var connection = new NpgsqlConnection("server=cipg01;Port=5432;Database=Group_H;User Id=postgres;Password=123456;"))
+                {
+                    connection.Open();
+                    var cmd = new NpgsqlCommand("UPDATE public.t_employee SET c_empname = @empname, c_shift = @shift, c_dept_id = @deptid WHERE c_empid = @empid", connection);
+                    cmd.Parameters.AddWithValue("@empid", employee.c_empid);
+                    cmd.Parameters.AddWithValue("@empname", employee.c_empname);
+                    cmd.Parameters.AddWithValue("@shift", employee.c_shift);
+                    cmd.Parameters.AddWithValue("@deptid", employee.c_dept_id);
 
-                var cmd = new NpgsqlCommand("UPDATE public.t_employee SET c_empname = @empname, c_shift = @shift, c_dept_id = @deptid WHERE c_empid = @empid", connection);
-                cmd.Parameters.AddWithValue("@empid", employee.c_empid);
-                cmd.Parameters.AddWithValue("@empname", employee.c_empname);
-                cmd.Parameters.AddWithValue("@shift", employee.c_shift);
-                cmd.Parameters.AddWithValue("@deptid", employee.c_dept_id);
+                    int rowsAffected = cmd.ExecuteNonQuery();
 
-                int rowsAffected = cmd.ExecuteNonQuery();
-
-                return rowsAffected > 0;
+                    return rowsAffected > 0;
+                }
             }
             catch (Exception ex)
             {
+                // Log the exception
                 Console.WriteLine(ex);
                 return false;
-            }
-            finally
-            {
-                connection.Close();
             }
         }
         public List<Dept> GetAllDepartments()
@@ -88,33 +78,29 @@ namespace API.Repositories
             var deptList = new List<Dept>();
             try
             {
-
-                connection.Open();
-
-
-                var cmd = new NpgsqlCommand("SELECT c_deptid, c_deptname FROM public.t_dept", connection);
-                var reader = cmd.ExecuteReader();
-
-
-                while (reader.Read())
+                using (var connection = new NpgsqlConnection("server=cipg01;Port=5432;Database=Group_H;User Id=postgres;Password=123456;"))
                 {
-                    var dept = new Dept
+                    connection.Open();
+                    var cmd = new NpgsqlCommand("SELECT c_deptid, c_deptname FROM public.t_dept", connection);
+                    using (var reader = cmd.ExecuteReader())
                     {
-
-                        c_deptid = Convert.ToInt32(reader["c_deptid"]),
-                        c_deptname = reader["c_deptname"].ToString()
-                    };
-                    deptList.Add(dept);
+                        while (reader.Read())
+                        {
+                            var dept = new Dept
+                            {
+                                c_deptid = Convert.ToInt32(reader["c_deptid"]),
+                                c_deptname = reader["c_deptname"].ToString()
+                            };
+                            deptList.Add(dept);
+                        }
+                    }
                 }
             }
             catch (Exception e)
             {
+                // Log the exception
                 Console.WriteLine(e);
                 throw;
-            }
-            finally
-            {
-                connection.Close();
             }
             return deptList;
         }
@@ -123,34 +109,35 @@ namespace API.Repositories
             AdminEmployee employee = null;
             try
             {
-                connection.Open();
-                var cmd = new NpgsqlCommand("SELECT e.c_empid, e.c_empname, e.c_shift, e.c_dept_id, d.c_deptname FROM public.t_employee e INNER JOIN public.t_dept d ON e.c_dept_id = d.c_deptid WHERE e.c_empid = @empid", connection);
-                cmd.Parameters.AddWithValue("@empid", empId);
-                var reader = cmd.ExecuteReader();
-
-                if (reader.Read())
+                using (var connection = new NpgsqlConnection("server=cipg01;Port=5432;Database=Group_H;User Id=postgres;Password=123456;"))
                 {
-                    employee = new AdminEmployee
+                    connection.Open();
+                    var cmd = new NpgsqlCommand("SELECT e.c_empid, e.c_empname, e.c_shift, e.c_dept_id, d.c_deptname FROM public.t_employee e INNER JOIN public.t_dept d ON e.c_dept_id = d.c_deptid WHERE e.c_empid = @empid", connection);
+                    cmd.Parameters.AddWithValue("@empid", empId);
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        c_empid = reader.GetInt32(0),
-                        c_empname = reader.GetString(1),
-                        c_shift = reader.GetString(2),
-                        c_dept_id = reader.GetInt32(3),
-                        c_deptname = new Dept
+                        if (reader.Read())
                         {
-                            c_deptid = reader.GetInt32(3),
-                            c_deptname = reader.GetString(4)
+                            employee = new AdminEmployee
+                            {
+                                c_empid = reader.GetInt32(0),
+                                c_empname = reader.GetString(1),
+                                c_shift = reader.GetString(2),
+                                c_dept_id = reader.GetInt32(3),
+                                c_deptname = new Dept
+                                {
+                                    c_deptid = reader.GetInt32(3),
+                                    c_deptname = reader.GetString(4)
+                                }
+                            };
                         }
-                    };
+                    }
                 }
             }
             catch (Exception ex)
             {
+                // Log the exception
                 Console.WriteLine(ex);
-            }
-            finally
-            {
-                connection.Close();
             }
             return employee;
         }
