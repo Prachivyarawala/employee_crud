@@ -1,5 +1,6 @@
 @model API.Models.AdminEmployee
 
+<h2>Kendo View</h2>
 <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2021.2.616/styles/kendo.common.min.css" />
 <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2021.2.616/styles/kendo.default.min.css" />
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -7,136 +8,107 @@
 
 <div id="grid"></div>
 
-<!-- Custom Modal for Editing -->
-<div id="editModal" class="modal" style="display:none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
-    <div class="modal-content" style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%;">
-        <span class="close" style="color: #aaaaaa; float: right; font-size: 28px; font-weight: bold;">&times;</span>
-        <h2 style="text-align: center;">Edit Employee</h2>
-        <form id="editEmployeeForm">
-            <input type="hidden" id="editEmpId" />
-            <label for="editEmpName">Employee Name:</label>
-            <input type="text" id="editEmpName" style="width: 100%;" /><br />
-            <label for="editShift">Shift:</label>
-            <input type="checkbox" id="editMorning" name="editShift" value="Morning"> Morning
-            <input type="checkbox" id="editAfternoon" name="editShift" value="Afternoon"> Afternoon<br />
-            <label for="editDept">Department:</label>
-            <select id="editDept" style="width: 100%;"></select><br />
-            <button type="button" id="saveEdit" style="width: 49%; float: left;">Save</button>
-            <button type="button" id="cancelEdit" style="width: 49%; float: right;">Cancel</button>
-        </form>
-    </div>
-</div>
-
 @section Scripts {
     <script>
+        function fetchDepartments(callback) {
+            $.ajax({
+                url: "https://localhost:7192/KendoAdminMVC/GetAlldept",
+                dataType: "json",
+                success: function(deptData) {
+                    callback(deptData);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error fetching department data:", error);
+                }
+            });
+        }
+
         $(document).ready(function () {
             var dataSource = new kendo.data.DataSource({
                 transport: {
                     read: {
                         url: "https://localhost:7192/KendoAdminMVC/getAllEmployee",
                         dataType: "json"
-                    }
+                    },
+                    update: {
+                        url: function (data) {
+                            return "https://localhost:7192/KendoAdminMVC/Update/" + data.c_empid;
+                        },
+                        type: "POST",
+                        dataType: "json"
+                    },
                 },
-                pageSize: 10
+                pageSize: 15,
+                schema: {
+                    model: {
+                        id: "c_empid",
+                        fields: {
+                            c_empid: { type: "number", editable: false, nullable: false },
+                            c_empname: { type: "string", validation: { required: true } },
+                            c_shift: { type: "string", validation: { required: true } },
+                            c_dept_id : { type: "number" }
+                        }
+                    }
+                }
             });
 
             $("#grid").kendoGrid({
                 dataSource: dataSource,
-                pageable: true,
                 columns: [
                     { field: "c_empid", title: "Employee ID" },
                     { field: "c_empname", title: "Employee Name" },
-                    { field: "c_shift", title: "Shift" },
-                    { field: "c_dept_id", title: "Department ID" },
-                    { command: [{ name: "edit", text: "Edit", click: showEditModal }], title: "&nbsp;", width: "100px" }
-                ]
-            });
+                    {
+                        field: "c_shift",
+                        title: "Shift",
+                        editor: function (container, options) {
+                            var checkboxWrapper = $('<div>').appendTo(container);
 
-            function showEditModal(e) {
-                e.preventDefault();
-                var dataItem = this.dataItem($(e.currentTarget).closest("tr")); // 'this' refers to the grid
-                $("#editEmpId").val(dataItem.c_empid);
-                $("#editEmpName").val(dataItem.c_empname);
-                
-                // Set the dropdown value
-                var deptId = dataItem.c_dept_id;
-                $("#editDept").empty(); // Clear existing options
-                $.ajax({
-                    url: "https://localhost:7192/KendoAdminMVC/GetAlldept",
-                    dataType: "json",
-                    success: function(deptData) {
-                        $.each(deptData, function(index, dept) {
-                            var option = $("<option>").attr("value", dept.c_deptname).text(dept.c_deptname);
-                            if (dept.c_deptid === deptId) {
-                                option.prop("selected", true); // Select the option matching the department ID
-                            }
-                            $("#editDept").append(option);
-                        });
-                        $("#editModal").show();
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Error fetching department data:", error);
-                    }
-                });
-                
-                // Set the checkboxes based on shift values
-                var shiftValues = dataItem.c_shift.split(', ');
-                shiftValues.forEach(function (value) {
-                    $("#edit" + value.charAt(0).toUpperCase() + value.slice(1)).prop("checked", true);
-                });
-            }
+                            checkboxWrapper.kendoCheckBoxGroup({
+                                items: [
+                                    { label: "Morning", value: "Morning" },
+                                    { label: "Evening", value: "Evening" }
+                                ],
+                                layout: "horizontal"
+                            });
 
-
-            $("#saveEdit").click(function () {
-                // Retrieve edited data from the form
-                var empId = $("#editEmpId").val();
-                var empName = $("#editEmpName").val();
-                var shiftValues = [];
-                $("input[name='editShift']:checked").each(function () {
-                    shiftValues.push($(this).val());
-                });
-                var deptId = $("#editDept").val();
-
-                // Call server-side action to update employee data
-                $.ajax({
-                    url: "https://localhost:7192/KendoAdminMVC/Update",
-                    type: "POST",
-                    dataType: "json",
-                    data: {
-                        c_empid: empId,
-                        c_empname: empName,
-                        c_shift: shiftValues.join(', '),
-                        c_dept_id: deptId
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            alert("Employee updated successfully!");
-                            $("#editModal").hide();
-                            dataSource.read(); // Refresh grid data
-                        } else {
-                            alert("Failed to update employee: " + response.message);
+                            var checkboxGroup = checkboxWrapper.data("kendoCheckBoxGroup");
+                            checkboxGroup.value(options.model.c_shift.split(',')); 
+                            checkboxGroup.bind("change", function (e) {
+                                var selectedFacilities = e.sender.value().join(',');
+                                options.model.set("c_shift", selectedFacilities);
+                            });
                         }
                     },
-                    error: function (xhr, status, error) {
-                        alert("An error occurred while updating employee data: " + error);
-                    }
-                });
+                    {
+                        field: "c_dept_id",
+                        title : "Department",
+                        editor: function(container, options) {
+                            var dropdown = $('<select name="' + options.field + '" id="' + options.field + '"></select>').appendTo(container);
+                            fetchDepartments(function(deptData) {
+                                $.each(deptData, function(index, dept) {
+                                    dropdown.append($('<option></option>').attr('value', dept.c_deptid).text(dept.c_deptname));
+                                });
+                                dropdown.val(options.model.c_dept_id);
+                            });
+                        }
+                    },
+                    { command: ["edit", "destroy"], title: "&nbsp;", width: "200px" }
+                ],
+                editable: "popup",
+                toolbar: ["create"],
+                pageable: true,
+                sortable: true,
+                filterable: true,
             });
 
-            $("#cancelEdit").click(function () {
-                $("#editModal").hide();
-            });
-
-            // Close the modal when clicking on the close button
-            $(".close").click(function () {
-                $("#editModal").hide();
-            });
-
-            // Close the modal when clicking outside of it
-            $(window).click(function (event) {
-                if (event.target == $("#editModal")[0]) {
-                    $("#editModal").hide();
+            dataSource.bind("requestEnd", function (e) {
+                if (e.type === "create" || e.type === "update" || e.type === "destroy") {
+                    dataSource.read();
                 }
+            });
+
+            $("#grid").on("click", ".k-grid-cancel-changes", function () {
+                dataSource.cancelChanges();
             });
         });
     </script>

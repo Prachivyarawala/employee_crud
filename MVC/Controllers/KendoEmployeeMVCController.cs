@@ -64,9 +64,44 @@ namespace MVC.Controllers
 
 
         [HttpPost]
-        public IActionResult Update(Employee employee)
+        public IActionResult Update(Employee employee, IFormFile? file = null)
         {
             Console.WriteLine("call : " + employee.c_dept_id);
+            var existingEmp = _employeeRepositories.FetchoneEmployee();
+            if (existingEmp == null)
+            {
+                return NotFound();
+            }
+            if (file == null || file.Length == 0)
+            {
+                employee.c_image = existingEmp.c_image;
+            }
+            else
+            {
+                var folderPath = @"..\MVC\wwwroot\images";
+
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                var filePath = Path.Combine(folderPath, file.FileName);
+                var fileName = Path.GetFileName(file.FileName);
+
+                if (System.IO.File.Exists(filePath))
+                {
+                    fileName = Guid.NewGuid().ToString() + "_" + fileName;
+                    filePath = Path.Combine(folderPath, fileName);
+                }
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    file.CopyTo(stream);
+                }
+
+                var imageUrl = Path.Combine("/images", fileName);
+                employee.c_image = imageUrl;
+            }
 
             if (_employeeRepositories.UpdateEmployee(employee))
             {
@@ -78,9 +113,27 @@ namespace MVC.Controllers
             }
         }
         [HttpPost]
-        public IActionResult AddEmployee(Employee employee)
+        public IActionResult AddEmployee(Employee employee, IFormFile? file = null)
         {
             Console.WriteLine("call : " + employee.c_dept_id);
+            if (file != null && file.Length > 0)
+            {
+                // Create folder if not exists
+                var folderPath = @"..\MVC\wwwroot\images";
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                var filePath = Path.Combine(folderPath, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    file.CopyTo(stream);
+                }
+                var imageUrl = Path.Combine("/images", fileName);
+                employee.c_image = imageUrl;
+            }
 
             if (_employeeRepositories.addemp(employee))
             {
@@ -92,25 +145,25 @@ namespace MVC.Controllers
             }
         }
         [HttpPost]
-public IActionResult Delete(int id)
-{
-    try
-    {
-        if (_employeeRepositories.DeletetEmployee(id))
+        public IActionResult Delete(int id)
         {
-            return Json(new { success = true, message = "Successfully Deleted" });
+            try
+            {
+                if (_employeeRepositories.DeletetEmployee(id))
+                {
+                    return Json(new { success = true, message = "Successfully Deleted" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Deletion Failed" });
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred while deleting employee: " + ex.Message);
+                return Json(new { success = false, message = "An error occurred while deleting employee" });
+            }
         }
-        else
-        {
-            return Json(new { success = false, message = "Deletion Failed" });
-        }
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine("An error occurred while deleting employee: " + ex.Message);
-        return Json(new { success = false, message = "An error occurred while deleting employee" });
-    }
-}
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

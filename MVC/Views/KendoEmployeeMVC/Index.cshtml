@@ -116,7 +116,7 @@
                         field: "c_image",
                         title: "Photo",
                         editor: function (container, options) {
-                            $('<input name="' + options.field + '" type="file" id="fileInput" />').appendTo(container);
+                            $('<input name="file" type="file" id="fileInput" />').appendTo(container);
                             $('<span id="filePathSpan"></span>').appendTo(container);
 
                             $('#fileInput').change(function () {

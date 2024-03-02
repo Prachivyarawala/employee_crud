@@ -28,7 +28,7 @@ namespace MVC.Controllers
         public IActionResult Index()
         {
             string username = HttpContext.Session.GetString("username");
-            if (username == null)
+            if (username == null || username != "admin")
             {
                 return RedirectToAction("Login", "User");
             }
