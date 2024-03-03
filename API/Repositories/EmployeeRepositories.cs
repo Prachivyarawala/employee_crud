@@ -203,19 +203,19 @@ namespace API.Repositories
                 connection.Open();
                 var cmd = new NpgsqlCommand("UPDATE public.t_employee SET c_empname = @empname, c_enpgender = @enpgender, c_shift = @shift, c_dept_id = @deptid, c_image = @image, c_dob = @dob WHERE c_empid = @empid", connection);
                 cmd.Parameters.AddWithValue("@empid", emp.c_empid);
-                // Console.WriteLine("id : "+ emp.c_empid);
+                Console.WriteLine("id : "+ emp.c_empid);
                 cmd.Parameters.AddWithValue("@empname", emp.c_empname);
-                // Console.WriteLine("name : "+ emp.c_empname);
+                Console.WriteLine("name : "+ emp.c_empname);
                 cmd.Parameters.AddWithValue("@enpgender", emp.c_enpgender);
-                // Console.WriteLine("gender : "+ emp.c_enpgender);
+                Console.WriteLine("gender : "+ emp.c_enpgender);
                 cmd.Parameters.AddWithValue("@shift", emp.c_shift);
-                // Console.WriteLine("gender : "+ emp.c_shift);
+                Console.WriteLine("shift : "+ emp.c_shift);
                 cmd.Parameters.AddWithValue("@deptid", emp.c_dept_id);
-                // Console.WriteLine("gender : "+ emp.c_dept_id);
+                Console.WriteLine("dept : "+ emp.c_dept_id);
                 cmd.Parameters.AddWithValue("@image", emp.c_image);
-                // Console.WriteLine("gender : "+ emp.c_image);
+                Console.WriteLine("image : "+ emp.c_image);
                 cmd.Parameters.AddWithValue("@dob", emp.c_dob);
-                // Console.WriteLine("gender : "+ emp.c_dob);
+                Console.WriteLine("dob : "+ emp.c_dob);
                 int rowsAffected = cmd.ExecuteNonQuery();
 
                 return rowsAffected > 0;

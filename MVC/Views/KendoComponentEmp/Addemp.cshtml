@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <!-- Kendo UI CSS -->
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2022.1.301/styles/kendo.default-v2.min.css" />
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .k-textbox,
+        .k-radio-label {
+            width: 100%;
+            padding: 5px;
+            font-size: 18px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            height: 48px;
+        }
+
+        .k-radio-label {
+            display: inline-block;
+            margin-right: 20px;
+            font-weight: normal;
+        }
+
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 5px;
+        }
+    </style>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Kendo UI JavaScript -->
+    <script src="https://kendo.cdn.telerik.com/2022.1.301/js/kendo.all.min.js"></script>
+</head>
+
+
+<body>
+
+    <h1 id="title">Update Employee</h1>
+    <div class="container">
+        <div>
+            <form method="post" id="employeeForm" class="employee-form" asp-action="Addemp">
+                <div>
+                    <label class="k-d-inline-block">Employee Name:</label>
+                    <input class="form-control" id="c_empname" name="c_empname">
+                </div>
+                <div>
+                    <label>Gender:</label>
+                    <div id="male"></div>
+                    <div id="female"></div>
+                </div>
+
+                <div>
+                    <label class="k-d-inline-block">Shift:</label><br>
+                    <input id="morning" name="c_shift" value="Morning"><label for="morning">Morning</label>
+                    <input id="afternoon" name="c_shift" value="Afternoon"><label for="afternoon">Afternoon</label>
+                </div>
+
+                <div>
+                    <label for="c_dept_id" class="k-d-inline-block">Department:</label>
+                    <select class="form-control" id="c_dept_id" name="c_dept_id" asp-items="ViewBag.department">
+                        <option value="">Select Department</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="c_image" class="k-d-inline-block">Image:</label>
+                    <input class="form-control" id="file" name="file" type="file">
+                    <div id="image"></div>
+                </div>
+
+                <div>
+                    <label for="c_dob" class="k-d-inline-block">Date of Birth:</label>
+                    <input class="form-control" id="c_dob" name="c_dob">
+                </div>
+                <button type="submit" class="btn btn-primary" kendoButton>Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Include necessary Kendo UI scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2024.1.130/js/kendo.all.min.js"></script>
+    <!-- Initialize Kendo UI components -->
+    <script>
+        $(document).ready(function () {
+
+            $("#c_empname").kendoTextBox({
+                placeholder: "Enter Name "
+            });
+            $('<input type="radio" name="c_enpgender" value="Male"/> Male<br>').appendTo("#male");
+            $('<input type="radio" name="c_enpgender" value="Female"/> Female<br>').appendTo("#female");
+
+            $('#morning').kendoCheckBox();
+            $('#afternoon').kendoCheckBox();
+
+            $("#c_dept_id").kendoDropDownList({
+                filter: "contains",
+                optionLabel: 'Select city...',
+            });
+
+            $("#c_dob").kendoDateTimePicker({
+                dateInput: true
+            });
+
+
+            imageUploadEditor(); // Call the function after it's defined
+
+        });
+
+        function imageUploadEditor() {
+            $("#file").kendoUpload({
+                multiple: false,
+                validation: {
+                    allowedExtensions: [".jpg", ".png", ".jpeg"]
+                },
+                select: imageNameChange
+            });
+            $('<input type="text" id="c_image" name="c_image" data-bind="value:c_image"  /> ').appendTo("#image");
+        }
+
+        function imageNameChange(e) {
+            $.each(e.files, function (index, value) {
+                var fileNameWithPath = "/images/" + value.name;
+                $("#c_image").val(fileNameWithPath).change();
+                console.log("c_image   " + $("#c_image").val());
+                var formData = new FormData();
+                formData.append("file", value.rawFile);
+                $.ajax({
+                    url: "/KendoComponentEmp/SaveImage",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                });
+            });
+        }
+    </script>
+</body>
+
+</html>

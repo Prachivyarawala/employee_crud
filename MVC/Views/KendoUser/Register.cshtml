@@ -1,0 +1,158 @@
+@model API.Models.User
+<!DOCTYPE html>
+<!-- Created By CodingNepal -->
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <!-- Kendo UI CSS -->
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2022.1.301/styles/kendo.default-v2.min.css" />
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .k-textbox,
+        .k-radio-label {
+            width: 100%;
+            padding: 5px;
+            font-size: 18px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            height: 48px;
+        }
+
+        .k-radio-label {
+            display: inline-block;
+            margin-right: 20px;
+            font-weight: normal;
+        }
+
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 5px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2022.1.301/js/kendo.all.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Registration Form</h2>
+        <form id="registrationForm" asp-action="Register" method="post">
+            <div>
+                <label for="name" class="k-d-inline-block">Name:</label>
+                <input id="c_username" name="c_username" />
+            </div>
+
+            <div>
+                <label for="email" class="k-d-inline-block">Email:</label>
+                <input id="c_useremail" name="c_useremail" />
+            </div>
+
+            <div>
+                <label for="password" class="k-d-inline-block">Password:</label>
+                <input id="c_userpassword" name="c_userpassword" />
+            </div>
+            <div>
+                <label for="password" class="k-d-inline-block">Confirm Password:</label>
+                <input id="confirmPassword" name="confirmPassword"  />
+            </div>
+
+            <button id="save" type="submit">Submit</button>
+
+            <div class="sign-up">
+               Already have Account?
+               <a asp-controller="KendoUser" asp-action="Login">signIn now</a>
+            </div>
+        </form>
+    </div>
+
+
+    <!-- ... (existing code) -->
+
+    <script>
+
+        $(document).ready(function () {
+            $("#c_username").kendoTextBox({
+                placeholder: "Enter Name "
+            });
+
+            $("#c_useremail").kendoTextBox({
+                placeholder: "Enter Name "
+            });
+            $("#c_userpassword").kendoTextBox({
+                placeholder: "Enter Password"
+            });
+            $("#c_userpassword").attr("type", "password");
+
+            $("#confirmPassword").kendoTextBox({
+                placeholder: "Retype Password"
+            });
+            $("#confirmPassword").attr("type", "password");
+
+
+        });
+
+
+
+        $(document).ready(function () {
+            // Attach input event handlers to update error messages dynamically
+            $('input').on('input', function () {
+                var fieldName = $(this).attr('name');
+                var errorContainer = $('[data-valmsg-for="' + fieldName + '"]');
+                errorContainer.html(''); // Clear the error message
+            });
+        });
+    </script>
+</body>
+
+
+
+</html>

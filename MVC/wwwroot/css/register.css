@@ -1,28 +1,35 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
-*{
+
+* {
   margin: 0;
   padding: 0;
   /* user-select: none; 
   box-sizing: border-box;  */
   font-family: 'Poppins', sans-serif;
 }
-html,body{
+
+html,
+body {
   height: 100%;
   width: 100%;
-  
+
 }
-body{
+
+body {
   /* display: grid;
   place-items: center;
   background: #dde1e7;
   text-align: center; */
 }
+
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* This ensures that the container is centered vertically on the viewport */
+  height: 100vh;
+  /* This ensures that the container is centered vertically on the viewport */
 }
+
 .content {
   display: grid;
   place-items: center;
@@ -41,6 +48,17 @@ body{
   color: #595959;
 }
 
+.k-textbox {
+  width: 100%;
+  padding: 5px;
+  font-size: 18px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  height: 48px;
+}
+
 .field {
   height: 50px;
   width: 100%;
@@ -51,7 +69,7 @@ body{
 
 .field input {
   height: 100%;
-  width: 100%;
+  width: 270px;
   padding-left: 45px;
   outline: none;
   border: none;
@@ -83,11 +101,11 @@ body{
   transition: opacity 0.3s ease;
 }
 
-.field input:valid ~ label {
+.field input:valid~label {
   opacity: 0;
 }
 
-.field input:invalid ~ label {
+.field input:invalid~label {
   opacity: 1;
   color: #ff0000;
 }

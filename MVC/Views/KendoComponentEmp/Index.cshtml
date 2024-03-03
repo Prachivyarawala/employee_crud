@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        html {
+            font-size: 14px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+    </style>
+    <title></title>
+
+    <h2>Kendo View</h2>
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2021.2.616/styles/kendo.common.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2021.2.616/styles/kendo.default.min.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2021.2.616/js/kendo.all.min.js"></script>
+
+
+</head>
+
+<body>
+    <h1>Welcome, @Context.Session.GetInt32("userid"): @Context.Session.GetString("username")!</h1>
+
+    @if (Model == null || Model.c_empid == null)
+    {
+        <p>
+            <a class="btn btn-primary" asp-action="Addemp">Add New Employee</a>
+        </p>
+    }
+    else
+    {
+
+        <h1>Your all Details</h1>
+        <div id="example">
+            <div id="grid"></div>
+            <script>
+                $(document).ready(function () {
+                    $("#grid").kendoGrid({
+                        dataSource: {
+                            transport: {
+                                read: {
+                                    url: "https://localhost:7192/KendoComponentEmp/getemployee",
+                                    dataType: "json" // Specify data type
+                                }
+                            },
+                            schema: {
+                                model: {
+                                    id: "c_empid",
+                                    fields: {
+                                        c_empid: { type: "number", editable: false, nullable: false },
+                                        c_empname: { type: "string", validation: { required: true } },
+                                        c_dob: { type: "date", validation: { required: true } },
+                                        c_enpgender: { type: "string", validation: { required: true } },
+                                        c_shift: { type: "string", validation: { required: true } },
+                                        c_image: { type: "string" },
+                                        c_dept_id: { type: "number" }
+                                    }
+                                }
+                            }
+                        },
+                        columns: [
+                            { field: "c_empid", title: "Employee ID" },
+                            { field: "c_empname", title: "Employee Name" },
+                            { field: "c_dob", title: "Date" },
+                            { field: "c_enpgender", title: "Gender" },
+                            { field: "c_shift", title: "Shift" },
+                            { field: "c_image", title: "Image", template: "<img src='#: c_image #' alt='Employee Photo' style='width: 50px; height: 50px;' />" },
+                            { field: "c_dept_id", title: "Department" }
+
+                        ]
+                    });
+                });
+            </script>
+        </div>
+        <br>
+        <form asp-action="DeleteEmployee" asp-controller="KendoComponentEmp" onclick="return('are you sure to delete record?')">
+            <input type="hidden" name="id" value="@Model.c_empid" />
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+        <form asp-action="UpdateEmployee" asp-controller="KendoComponentEmp" method="get">
+            <input type="hidden" name="id" value="@Model.c_empid" />
+            <button type="submit" class="btn btn-primary">Edit</button>
+        </form>
+
+    }
+
+</body>
+
+</html>
