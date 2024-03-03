@@ -120,14 +120,28 @@ namespace API.Repositories
             {
                 connection.Open();
                 using var cmd = new NpgsqlCommand("INSERT INTO t_employee(c_userid, c_empname, c_enpgender, c_shift, c_dept_id, c_image, c_dob) VALUES (@c_userid, @c_empname, @c_enpgender, @c_shift, @c_dept_id, @c_image, @c_dob)", connection);
-
+                Console.WriteLine("ishhh");
                 cmd.Parameters.AddWithValue("@c_userid", _httpContextAccessor.HttpContext.Session.GetInt32("userid"));
+                Console.WriteLine("userid : " + _httpContextAccessor.HttpContext.Session.GetInt32("userid"));
                 cmd.Parameters.AddWithValue("@c_empname", employee.c_empname);
+                Console.WriteLine("userid : " + employee.c_empname);
+
                 cmd.Parameters.AddWithValue("@c_enpgender", employee.c_enpgender);
+                Console.WriteLine("userid : " + employee.c_enpgender);
+
                 cmd.Parameters.AddWithValue("@c_shift", employee.c_shift);
+                Console.WriteLine("userid : " + employee.c_shift);
+
+
                 cmd.Parameters.AddWithValue("@c_dept_id", employee.c_dept_id);
+                Console.WriteLine("userid : " + employee.c_dept_id);
+
                 cmd.Parameters.AddWithValue("@c_image", employee.c_image);
+                Console.WriteLine("userid : " + employee.c_image);
+
                 cmd.Parameters.AddWithValue("@c_dob", employee.c_dob);
+                Console.WriteLine("userid : " + employee.c_dob);
+
                 cmd.ExecuteNonQuery();
                 return true;
             }
@@ -189,19 +203,19 @@ namespace API.Repositories
                 connection.Open();
                 var cmd = new NpgsqlCommand("UPDATE public.t_employee SET c_empname = @empname, c_enpgender = @enpgender, c_shift = @shift, c_dept_id = @deptid, c_image = @image, c_dob = @dob WHERE c_empid = @empid", connection);
                 cmd.Parameters.AddWithValue("@empid", emp.c_empid);
-                Console.WriteLine("id : "+ emp.c_empid);
+                // Console.WriteLine("id : "+ emp.c_empid);
                 cmd.Parameters.AddWithValue("@empname", emp.c_empname);
-                Console.WriteLine("name : "+ emp.c_empname);
+                // Console.WriteLine("name : "+ emp.c_empname);
                 cmd.Parameters.AddWithValue("@enpgender", emp.c_enpgender);
-                Console.WriteLine("gender : "+ emp.c_enpgender);
+                // Console.WriteLine("gender : "+ emp.c_enpgender);
                 cmd.Parameters.AddWithValue("@shift", emp.c_shift);
-                Console.WriteLine("gender : "+ emp.c_shift);
+                // Console.WriteLine("gender : "+ emp.c_shift);
                 cmd.Parameters.AddWithValue("@deptid", emp.c_dept_id);
-                Console.WriteLine("gender : "+ emp.c_dept_id);
+                // Console.WriteLine("gender : "+ emp.c_dept_id);
                 cmd.Parameters.AddWithValue("@image", emp.c_image);
-                Console.WriteLine("gender : "+ emp.c_image);
+                // Console.WriteLine("gender : "+ emp.c_image);
                 cmd.Parameters.AddWithValue("@dob", emp.c_dob);
-                Console.WriteLine("gender : "+ emp.c_dob);
+                // Console.WriteLine("gender : "+ emp.c_dob);
                 int rowsAffected = cmd.ExecuteNonQuery();
 
                 return rowsAffected > 0;

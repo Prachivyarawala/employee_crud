@@ -21,7 +21,6 @@ namespace MVC.Controllers
         private readonly IEmployeeRepositories _employeeRepositories;
         public KendoEmployeeMVCController(IEmployeeRepositories employeeRepositories, IWebHostEnvironment webHostEnvironment)
         {
-            // _employeeRepositories = Adminrepo;
             _webHostEnvironment = webHostEnvironment;
             _employeeRepositories = employeeRepositories;
         }
@@ -66,43 +65,6 @@ namespace MVC.Controllers
         [HttpPost]
         public IActionResult Update(Employee employee, IFormFile? file = null)
         {
-            Console.WriteLine("call : " + employee.c_dept_id);
-            var existingEmp = _employeeRepositories.FetchoneEmployee();
-            if (existingEmp == null)
-            {
-                return NotFound();
-            }
-            if (file == null || file.Length == 0)
-            {
-                employee.c_image = existingEmp.c_image;
-            }
-            else
-            {
-                var folderPath = @"..\MVC\wwwroot\images";
-
-                if (!Directory.Exists(folderPath))
-                {
-                    Directory.CreateDirectory(folderPath);
-                }
-
-                var filePath = Path.Combine(folderPath, file.FileName);
-                var fileName = Path.GetFileName(file.FileName);
-
-                if (System.IO.File.Exists(filePath))
-                {
-                    fileName = Guid.NewGuid().ToString() + "_" + fileName;
-                    filePath = Path.Combine(folderPath, fileName);
-                }
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    file.CopyTo(stream);
-                }
-
-                var imageUrl = Path.Combine("/images", fileName);
-                employee.c_image = imageUrl;
-            }
-
             if (_employeeRepositories.UpdateEmployee(employee))
             {
                 return Json(new { success = true, message = "Successfully Added", newEmployeeId = employee.c_empid });
@@ -115,26 +77,6 @@ namespace MVC.Controllers
         [HttpPost]
         public IActionResult AddEmployee(Employee employee, IFormFile? file = null)
         {
-            Console.WriteLine("call : " + employee.c_dept_id);
-            if (file != null && file.Length > 0)
-            {
-                // Create folder if not exists
-                var folderPath = @"..\MVC\wwwroot\images";
-                if (!Directory.Exists(folderPath))
-                {
-                    Directory.CreateDirectory(folderPath);
-                }
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                var filePath = Path.Combine(folderPath, fileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    file.CopyTo(stream);
-                }
-                var imageUrl = Path.Combine("/images", fileName);
-                employee.c_image = imageUrl;
-            }
-
             if (_employeeRepositories.addemp(employee))
             {
                 return Json(new { success = true, message = "Successfully Added", newEmployeeId = employee.c_empid });
@@ -163,6 +105,32 @@ namespace MVC.Controllers
                 Console.WriteLine("An error occurred while deleting employee: " + ex.Message);
                 return Json(new { success = false, message = "An error occurred while deleting employee" });
             }
+        }
+
+        [HttpPost("SaveImage")]
+        public IActionResult SaveImage(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No image uploaded.");
+            }
+
+            var folderPath = @"..\MVC\wwwroot\images";
+
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            var filePath = Path.Combine(folderPath, file.FileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                file.CopyTo(stream);
+            }
+
+            var imageUrl = Path.Combine("/images", file.FileName); // Assuming the URL to access the image is /images/{filename}
+            return Ok(new { imageUrl });
         }
 
 

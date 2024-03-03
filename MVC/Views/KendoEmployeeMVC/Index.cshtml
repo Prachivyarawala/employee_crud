@@ -15,10 +15,10 @@
             $.ajax({
                 url: "https://localhost:7192/KendoEmployeeMVC/GetAlldept",
                 dataType: "json",
-                success: function(deptData) {
+                success: function (deptData) {
                     callback(deptData);
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error("Error fetching department data:", error);
                 }
             });
@@ -67,7 +67,7 @@
                             c_enpgender: { type: "string", validation: { required: true } },
                             c_shift: { type: "string", validation: { required: true } },
                             c_image: { type: "string" },
-                            c_dept_id : { type: "number" }
+                            c_dept_id: { type: "number" }
                         }
                     }
                 }
@@ -105,35 +105,21 @@
                             });
 
                             var checkboxGroup = checkboxWrapper.data("kendoCheckBoxGroup");
-                            checkboxGroup.value(options.model.c_shift.split(',')); 
+                            checkboxGroup.value(options.model.c_shift.split(','));
                             checkboxGroup.bind("change", function (e) {
                                 var selectedFacilities = e.sender.value().join(',');
                                 options.model.set("c_shift", selectedFacilities);
                             });
                         }
                     },
-                    {
-                        field: "c_image",
-                        title: "Photo",
-                        editor: function (container, options) {
-                            $('<input name="file" type="file" id="fileInput" />').appendTo(container);
-                            $('<span id="filePathSpan"></span>').appendTo(container);
-
-                            $('#fileInput').change(function () {
-                                var fileName = $(this).val().split('\\').pop();
-                                $('#filePathSpan').text(fileName);
-                                options.model.set("c_image", fileName);
-                            });
-                        },
-                        template: "<img src='#= c_image #' alt='City Photo' style='max-width: 100px; max-height: 100px;'/>"
-                    },
+                    { field: "c_image", title: "Photo", editor: imageUploadEditor, template: "<img src='#: c_image #' alt='Employee Photo' style='width: 50px; height: 50px;' />" },
                     {
                         field: "c_dept_id",
-                        title : "Department",
-                        editor: function(container, options) {
+                        title: "Department",
+                        editor: function (container, options) {
                             var dropdown = $('<select name="' + options.field + '" id="' + options.field + '"></select>').appendTo(container);
-                            fetchDepartments(function(deptData) {
-                                $.each(deptData, function(index, dept) {
+                            fetchDepartments(function (deptData) {
+                                $.each(deptData, function (index, dept) {
                                     dropdown.append($('<option></option>').attr('value', dept.c_deptid).text(dept.c_deptname));
                                 });
                                 // Set the selected value
@@ -145,7 +131,7 @@
                         field: "c_dob",
                         title: "Date of Birth",
                         format: "{0:dd/MM/yyyy}", // Date format
-                        editor: function(container, options) {
+                        editor: function (container, options) {
                             $('<input name="' + options.field + '" />').appendTo(container).kendoDatePicker();
                         }
                     },
@@ -157,6 +143,44 @@
                 sortable: true,
                 filterable: true,
             });
+
+            function imageUploadEditor(container, options) {
+                $('<input type="file" id="temp_name" name="temp_name"  />')
+                    .appendTo(container)
+                    .kendoUpload({
+                        multiple: false,
+                        validation: {
+                            allowedExtensions: [".jpg", ".png", ".jpeg"]
+                        },
+                        select: imageNameChange
+                    });
+
+                $('<input type="hidden" id="c_photo" name="c_image" data-bind="value:c_image"  /> ').appendTo(container);
+            }
+
+            function imageNameChange(e) {
+                $.each(e.files, function (index, value) {
+                    var fileNameWithPath = "/images/" + value.name;
+                    $("#c_photo").val(fileNameWithPath).change();
+                    var formData = new FormData();
+                    formData.append("file", value.rawFile);
+                    $.ajax({
+                        url: "https://localhost:7072/SaveImage", // Update the URL to point to your API endpoint
+                        type: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function () {
+                            console.log("Image upload successful");
+                            $("#popupForm").data("kendoWindow").close();
+                            location.reload();
+                        },
+                        error: function () {
+                            console.error("Error uploading image");
+                        }
+                    });
+                });
+            }
 
             dataSource.bind("requestEnd", function (e) {
                 if (e.type === "create" || e.type === "update" || e.type === "destroy") {

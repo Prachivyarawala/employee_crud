@@ -62,12 +62,16 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <script>
+    var username = sessionStorage.getItem('userid');
+    console.log("userid : " + username);
+    if (username === null || username != 254) {
+        window.location.href = '/MvcUser/Login';
+    }
     $(document).ready(function () {
         loadEmp();
 
     });
     loadDept();
-
     function loadEmp() {
         $.ajax({
             url: 'https://localhost:7072/api/AdminApi',

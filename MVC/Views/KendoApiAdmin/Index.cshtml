@@ -10,14 +10,19 @@
 
 @section Scripts {
     <script>
+        var username = sessionStorage.getItem('userid');
+        console.log("userid : " + username);
+        if (username === null || username != 254) {
+            window.location.href = '/MvcUser/Login';
+        }
         function fetchDepartments(callback) {
             $.ajax({
                 url: "https://localhost:7072/api/AdminApi/departments",
                 dataType: "json",
-                success: function(deptData) {
+                success: function (deptData) {
                     callback(deptData);
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error("Error fetching department data:", error);
                 }
             });
@@ -46,7 +51,7 @@
                             c_empid: { type: "number", editable: false, nullable: false },
                             c_empname: { type: "string", validation: { required: true } },
                             c_shift: { type: "string", validation: { required: true } },
-                            c_dept_id : { type: "number" }
+                            c_dept_id: { type: "number" }
                         }
                     }
                 }
@@ -72,7 +77,7 @@
                             });
 
                             var checkboxGroup = checkboxWrapper.data("kendoCheckBoxGroup");
-                            checkboxGroup.value(options.model.c_shift.split(',')); 
+                            checkboxGroup.value(options.model.c_shift.split(','));
                             checkboxGroup.bind("change", function (e) {
                                 var selectedFacilities = e.sender.value().join(',');
                                 options.model.set("c_shift", selectedFacilities);
@@ -81,11 +86,11 @@
                     },
                     {
                         field: "c_dept_id",
-                        title : "Department",
-                        editor: function(container, options) {
+                        title: "Department",
+                        editor: function (container, options) {
                             var dropdown = $('<select name="' + options.field + '" id="' + options.field + '"></select>').appendTo(container);
-                            fetchDepartments(function(deptData) {
-                                $.each(deptData, function(index, dept) {
+                            fetchDepartments(function (deptData) {
+                                $.each(deptData, function (index, dept) {
                                     dropdown.append($('<option></option>').attr('value', dept.c_deptid).text(dept.c_deptname));
                                 });
                                 dropdown.val(options.model.c_dept_id);

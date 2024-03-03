@@ -36,10 +36,17 @@
                         dataType: "json"
                     },
                     create: {
-                        url: "https://localhost:7072/Addemp",
+                        url: "https://localhost:7072/ApiAdd",
                         type: "POST",
-                        dataType: "json"
+                        dataType: "json",
+                        data: function (data) {
+                            data.c_empid = 1111;
+                            data.c_userid = username; // Add the userid to the data
+                            data.c_dob = kendo.toString(data.c_dob, "yyyy-MM-dd");
+                            return data; // Convert data to JSON string
+                        }
                     },
+
                     destroy: {
                         url: function (data) {
                             return "https://localhost:7072/delete" + data.c_empid;
@@ -49,13 +56,17 @@
                     },
                     update: {
                         url: function (data) {
-                            return "https://localhost:7072/UpdateEmployee?id=" + username;
+                            return "https://localhost:7072/ApiUpdate?id=" + username;
                         },
                         type: "PUT",
                         dataType: "json",
-                        contentType: "application/json" // Set the Content-Type header
-                        
+                        data: function (data) {
+                            data.c_userid = username; // Add the userid to the data
+                            data.c_dob = kendo.toString(data.c_dob, "yyyy-MM-dd");
+                            return data; // Convert data to JSON string
+                        }
                     },
+
                 },
                 pageSize: 15,
                 schema: {
@@ -100,11 +111,10 @@
                             checkboxWrapper.kendoCheckBoxGroup({
                                 items: [
                                     { label: "Morning", value: "Morning" },
-                                    { label: "Evening", value: "Evening" }
+                                    { label: "Afternoon", value: "Afternoon" }
                                 ],
                                 layout: "horizontal"
                             });
-
                             var checkboxGroup = checkboxWrapper.data("kendoCheckBoxGroup");
                             checkboxGroup.value(options.model.c_shift.split(','));
                             checkboxGroup.bind("change", function (e) {
@@ -112,21 +122,6 @@
                                 options.model.set("c_shift", selectedFacilities);
                             });
                         }
-                    },
-                    {
-                        field: "c_image",
-                        title: "Photo",
-                        editor: function (container, options) {
-                            $('<input name="file" type="file" id="fileInput" />').appendTo(container);
-                            $('<span id="filePathSpan"></span>').appendTo(container);
-
-                            $('#fileInput').change(function () {
-                                var fileName = $(this).val().split('\\').pop();
-                                $('#filePathSpan').text(fileName);
-                                options.model.set("c_image", fileName);
-                            });
-                        },
-                        template: "<img src='#= c_image #' alt='City Photo' style='max-width: 100px; max-height: 100px;'/>"
                     },
                     {
                         field: "c_dept_id",
@@ -142,10 +137,11 @@
                             });
                         }
                     },
+                    { field: "c_image", title: "Photo", editor: imageUploadEditor, template: "<img src='#: c_image #' alt='Employee Photo' style='width: 50px; height: 50px;' />" },
                     {
                         field: "c_dob",
                         title: "Date of Birth",
-                        format: "{0:dd/MM/yyyy}", // Date format
+                        format: "{0:dd/MM/yyyy}",
                         editor: function (container, options) {
                             $('<input name="' + options.field + '" />').appendTo(container).kendoDatePicker();
                         }
@@ -158,6 +154,44 @@
                 sortable: true,
                 filterable: true,
             });
+
+            function imageUploadEditor(container, options) {
+                $('<input type="file" id="temp_name" name="temp_name"  />')
+                    .appendTo(container)
+                    .kendoUpload({
+                        multiple: false,
+                        validation: {
+                            allowedExtensions: [".jpg", ".png", ".jpeg"]
+                        },
+                        select: imageNameChange
+                    });
+
+                $('<input type="hidden" id="c_image" name="c_image" data-bind="value:c_image"  /> ').appendTo(container);
+            }
+
+            function imageNameChange(e) {
+                $.each(e.files, function (index, value) {
+                    var fileNameWithPath = "/images/" + value.name;
+                    $("#c_image").val(fileNameWithPath).change();
+                    var formData = new FormData();
+                    formData.append("file", value.rawFile);
+                    $.ajax({
+                        url: "https://localhost:7072/SaveImage", // Update the URL to point to your API endpoint
+                        type: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function () {
+                            console.log("Image upload successful");
+                            $("#popupForm").data("kendoWindow").close();
+                            location.reload();
+                        },
+                        error: function () {
+                            console.error("Error uploading image");
+                        }
+                    });
+                });
+            }
 
             dataSource.bind("requestEnd", function (e) {
                 if (e.type === "create" || e.type === "update" || e.type === "destroy") {

@@ -35,12 +35,12 @@ namespace API.Controllers
         [HttpPut("UpdateEmployee")]
         public IActionResult UpdateEmployee(int id, [FromForm] Employee? emp = null, IFormFile? file = null)
         {
-            // _httpContextAccessor.HttpContext.Session.SetInt32("userid" , id);
-            // var existingEmp = _employeeRepositories.FetchoneEmployee();
-            // if (existingEmp == null)
-            // {
-            //     return NotFound();
-            // }
+            _httpContextAccessor.HttpContext.Session.SetInt32("userid" , id);
+            var existingEmp = _employeeRepositories.FetchoneEmployee();
+            if (existingEmp == null)
+            {
+                return NotFound();
+            }
 
             Console.WriteLine("empid : " + emp.c_empid);
             Console.WriteLine("empname : " + emp.c_empname);
@@ -48,7 +48,7 @@ namespace API.Controllers
             Console.WriteLine("emp shift : " + emp.c_shift);
             Console.WriteLine("emp dob : " + emp.c_dob);
             Console.WriteLine("emp dept id : " + emp.c_dept_id);
-            
+
             if (file == null || file.Length == 0)
             {
                 Console.WriteLine("nulllllllllll");
@@ -84,9 +84,20 @@ namespace API.Controllers
             emp.c_shift = string.Join(", ", shift);
             if (_employeeRepositories.UpdateEmployee(emp))
             {
-                return Ok();
+                return Ok(emp);
             }
+            return BadRequest(new { success = false, message = "Failed to update city" });
+        }
 
+        [HttpPut("ApiUpdate")]
+        public IActionResult UpdateEmp(int id, [FromForm] Employee? emp = null)
+        {
+            _httpContextAccessor.HttpContext.Session.SetInt32("userid" , id);
+            Console.WriteLine("userid sesssion " + _httpContextAccessor.HttpContext.Session.GetInt32("userid"));
+            if (_employeeRepositories.UpdateEmployee(emp))
+            {
+                return Ok(emp);
+            }
             return BadRequest(new { success = false, message = "Failed to update city" });
         }
 
@@ -94,15 +105,19 @@ namespace API.Controllers
         [HttpPost("Addemp")]
         public IActionResult Addemp([FromForm] Employee emp, IFormFile file)
         {
-
+            Console.WriteLine("UserId  : " + emp.c_userid);
+            Console.WriteLine("empid : " + emp.c_empid);
+            Console.WriteLine("empname : " + emp.c_empname);
+            Console.WriteLine("emp gender : " + emp.c_enpgender);
+            Console.WriteLine("emp shift : " + emp.c_shift);
+            Console.WriteLine("emp dob : " + emp.c_dob);
+            Console.WriteLine("emp dept id : " + emp.c_dept_id);
 
             var folderPath = @"..\MVC\wwwroot\images";
-
             if (!Directory.Exists(folderPath))
             {
                 Directory.CreateDirectory(folderPath);
             }
-
             var filePath = Path.Combine(folderPath, file.FileName);
             var fileName = Path.GetFileName(file.FileName);
 
@@ -127,6 +142,47 @@ namespace API.Controllers
             _employeeRepositories.addemp(emp);
             return Ok();
             // return BadRequest(new { success = false, message = "Failed to add city" });
+        }
+
+        [HttpPost("ApiAdd")]
+        public IActionResult AddEmployee([FromForm] Employee employee)
+        {
+            Console.WriteLine("call : " + employee.c_userid);
+            HttpContext.Session.SetInt32("userid", employee.c_userid.GetValueOrDefault());
+            if (_employeeRepositories.addemp(employee))
+            {
+                return Ok(employee);
+            }
+            else
+            {
+                return BadRequest(new { success = false, message = "Failed to add city" });
+            }
+        }
+
+        [HttpPost("SaveImage")]
+        public IActionResult SaveImage(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No image uploaded.");
+            }
+
+            var folderPath = @"..\MVC\wwwroot\images";
+
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            var filePath = Path.Combine(folderPath, file.FileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                file.CopyTo(stream);
+            }
+
+            var imageUrl = Path.Combine("/images", file.FileName); // Assuming the URL to access the image is /images/{filename}
+            return Ok(new { imageUrl });
         }
 
 
