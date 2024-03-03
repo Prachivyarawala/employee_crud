@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        .container {
+            max-width: 95%;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .k-textbox,
+        .k-radio-label {
+            width: 100%;
+            padding: 5px;
+            font-size: 18px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            height: 48px;
+        }
+
+        .k-radio-label {
+            display: inline-block;
+            margin-right: 20px;
+            font-weight: normal;
+        }
+
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 5px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="https://kendo.cdn.telerik.com/2022.1.301/js/kendo.all.min.js"></script>
+
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2021.2.616/styles/kendo.common.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2021.2.616/styles/kendo.default.min.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2021.2.616/js/kendo.all.min.js"></script>
+
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2022.1.301/styles/kendo.default-v2.min.css" />
+
+
+
+</head>
+
+<body>
+    <h1>Welcome, @Context.Session.GetInt32("userid"): @Context.Session.GetString("username")!</h1>
+
+
+    <h1>Your all Details</h1>
+    <div id="example">
+        <div id="grid"></div>
+        <script>
+            $(document).ready(function () {
+                $("#grid").kendoGrid({
+                    dataSource: {
+                        transport: {
+                            read: {
+                                url: "https://localhost:7192/KendoComponentAjaxEmp/getemployee",
+                                dataType: "json" // Specify data type
+                            }
+                        },
+                        schema: {
+                            model: {
+                                id: "c_empid",
+                                fields: {
+                                    c_empid: { type: "number", editable: false, nullable: false },
+                                    c_empname: { type: "string", validation: { required: true } },
+                                    c_dob: { type: "date", validation: { required: true } },
+                                    c_enpgender: { type: "string", validation: { required: true } },
+                                    c_shift: { type: "string", validation: { required: true } },
+                                    c_image: { type: "string" },
+                                    c_dept_id: { type: "number" }
+                                }
+                            }
+                        }
+                    },
+                    columns: [
+                        { field: "c_empid", title: "Employee ID" },
+                        { field: "c_empname", title: "Employee Name" },
+                        { field: "c_dob", title: "Date" },
+                        { field: "c_enpgender", title: "Gender" },
+                        { field: "c_shift", title: "Shift" },
+                        { field: "c_image", title: "Image", template: "<img src='#: c_image #' alt='Employee Photo' style='width: 50px; height: 50px;' />" },
+                        { field: "c_dept_id", title: "Department" }
+
+                    ]
+                });
+            });
+        </script>
+    </div>
+    <br>
+    <td>
+        <button type="button" onclick='loadData( @Context.Session.GetInt32("userid") )'
+            class="btn btn-primary">Edit</button>
+        <button type="button" onclick='deleteEmployee( @Context.Session.GetInt32("userid"))'
+            class="btn btn-danger">Delete</button>
+    </td>
+    <br>
+    <div class="container">
+        <div>
+            <form method="post" id="employeeForm" class="employee-form" asp-action="UpdateEmployee">
+                <div>
+                    <label class="k-d-inline-block">Employee id:</label>
+                    <input type="text" readonly class="form-control" id="c_empid" name="c_empid">
+                </div>
+                <div>
+                    <label class="k-d-inline-block">Employee Name:</label>
+                    <input class="form-control" id="c_empname" name="c_empname">
+                </div>
+                <div>
+                    <label>Gender:</label>
+                    <div id="male"></div>
+                    <div id="female"></div>
+                </div>
+
+                <div>
+                    <label class="k-d-inline-block">Shift:</label><br>
+                    <input id="morning" name="c_shift" value="Morning"><label for="morning">Morning</label>
+                    <input id="afternoon" name="c_shift" value="Afternoon"><label for="afternoon">Afternoon</label>
+                </div>
+
+                <div>
+                    <label for="c_dept_id" class="k-d-inline-block">Department:</label>
+                    <select class="form-control" id="c_dept_id" name="c_dept_id">
+                        <option value="">Select Department</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="c_image" class="k-d-inline-block">Image:</label>
+                    <input class="form-control" id="file" name="file" type="file">
+                    <div id="image"></div>
+                </div>
+
+                <div>
+                    <label for="c_dob" class="k-d-inline-block">Date of Birth:</label>
+                    <input class="form-control" id="c_dob" name="c_dob">
+                </div>
+                <button type="submit" class="btn btn-primary" kendoButton>Submit</button>
+            </form>
+        </div>
+    </div>
+    <!-- Include necessary Kendo UI scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2024.1.130/js/kendo.all.min.js"></script>
+    <!-- Initialize Kendo UI components -->
+
+    <script>
+        $(document).ready(function () {
+            var deptDataSource = new kendo.data.DataSource({
+                transport: {
+                    read: {
+                        url: "/KendoComponentAjaxEmp/GetAllDept", // Endpoint to fetch departments from your database
+                        dataType: "json"
+                    }
+                },
+                schema: {
+                    data: function (response) {
+                        return response;
+                    },
+                    model: {
+                        id: "c_deptid", // The field in your department data representing the department id
+                        fields: {
+                            c_deptid: { type: "number" }, // Define the data type for deptid
+                            c_deptname: { type: "string" } // Define the data type for deptname
+                        }
+                    }
+                },
+                sort: { field: "c_deptname", dir: "asc" }
+            });
+
+            $("#c_empname").kendoTextBox({
+                placeholder: "Enter Name "
+            });
+            $('<input type="radio" name="c_enpgender" value="Male"/> Male<br>').appendTo("#male");
+            $('<input type="radio" name="c_enpgender" value="Female"/> Female<br>').appendTo("#female");
+
+            $('#morning').kendoCheckBox();
+            $('#afternoon').kendoCheckBox();
+
+            $("#c_dept_id").kendoDropDownList({
+                filter: "contains",
+                dataTextField: "c_deptname",
+                dataValueField: "c_deptid",
+                dataSource: deptDataSource
+            });
+
+            $("#c_dob").kendoDateTimePicker({
+                dateInput: true
+            });
+
+
+            imageUploadEditor(); // Call the function after it's defined
+
+        });
+
+
+        function imageUploadEditor() {
+            $("#file").kendoUpload({
+                multiple: false,
+                validation: {
+                    allowedExtensions: [".jpg", ".png", ".jpeg"]
+                },
+                select: imageNameChange
+            });
+            $('<input type="hidden" id="c_image" name="c_image" data-bind="value:c_image"  /> ').appendTo("#image");
+        }
+
+        function imageNameChange(e) {
+            $.each(e.files, function (index, value) {
+                var fileNameWithPath = "/images/" + value.name;
+                $("#c_image").val(fileNameWithPath).change();
+                console.log("c_image   " + $("#c_image").val());
+                var formData = new FormData();
+                formData.append("file", value.rawFile);
+                $.ajax({
+                    url: "/KendoComponentEmp/SaveImage",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                });
+            });
+        }
+
+        function loadData(id) {
+            $.ajax({
+                url: '/KendoComponentAjaxEmp/getemployee',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                    $('#c_empid').val(data.c_empid);
+                    $('#c_empname').val(data.c_empname);
+                    $('input[name="c_enpgender"][value="' + data.c_enpgender + '"]').prop('checked', true);
+                    var shift = data.c_shift.split(',');
+                    shift.forEach(function (shift) {
+                        $('input[name="c_shift"][value="' + shift + '"]').prop('checked', true);
+                    });
+                    $('#c_dept_id').val(data.c_dept_id);
+                    $('#c_dept_id').change();
+                    $('#c_image').attr('src', data.c_image); // Display the image
+
+                    if (data.c_dob) {
+                        var dob = new Date(data.c_dob);
+                        dob.setDate(dob.getDate() + 1);
+                        var formattedDOB = dob.toISOString().split('T')[0];
+                        $('#c_dob').val(formattedDOB);
+                    } else {
+                        $('#c_dob').val(''); 
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error loading employee data:', error);
+                }
+            });
+        }
+
+        document.getElementById('employeeForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            var form = document.getElementById('employeeForm');
+            var formData = new FormData(form);
+            for (var pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
+            var empid = formData.get("c_empid");
+
+            if (empid && empid > 0) {
+                fetch('/KendoComponentAjaxEmp/UpdateEmployee', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to updated employee.');
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        console.log(data);
+                        alert("Employee updated successfully!");
+                        window.location.href = '/KendoComponentAjaxEmp/Index';
+                    })
+                    .catch(error => {
+                        console.error('Error updated employee:', error.message);
+                        alert("Failed to Update employee.");
+                    });
+            }
+            else {
+                fetch('/KendoComponentAjaxEmp/Addemp', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to Add employee.');
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        console.log(data);
+                        alert("Employee Add successfully!");
+                        window.location.href = '/AjaxEmployee/Index';
+                    })
+                    .catch(error => {
+                        console.error('Error Add employee:', error.message);
+                        alert("Failed to Add employee.");
+                    });
+            }
+        });
+
+
+
+    </script>
+
+
+</body>
+
+</html>
