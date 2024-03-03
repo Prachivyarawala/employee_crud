@@ -86,12 +86,17 @@
     <div id="example">
         <div id="grid"></div>
         <script>
+            var username = sessionStorage.getItem('userid');
+            console.log("userid : " + username);
+            if (username === null) {
+                window.location.href = '/MvcUser/Login';
+            }
             $(document).ready(function () {
                 $("#grid").kendoGrid({
                     dataSource: {
                         transport: {
                             read: {
-                                url: "https://localhost:7192/KendoComponentAjaxEmp/getemployee",
+                                url: "https://localhost:7072/getemployee?id=" + username,
                                 dataType: "json" // Specify data type
                             }
                         },
@@ -186,7 +191,7 @@
             var deptDataSource = new kendo.data.DataSource({
                 transport: {
                     read: {
-                        url: "/KendoComponentAjaxEmp/GetAllDept", // Endpoint to fetch departments from your database
+                        url: "https://localhost:7072/api/AdminApi/departments", // Endpoint to fetch departments from your database
                         dataType: "json"
                     }
                 },
@@ -261,7 +266,7 @@
 
         function loadData(id) {
             $.ajax({
-                url: '/KendoComponentAjaxEmp/getemployee',
+                url: 'https://localhost:7072/getemployee?id=' + username,
                 type: 'GET',
                 dataType: 'json',
                 success: function (data) {
@@ -283,7 +288,7 @@
                         var formattedDOB = dob.toISOString().split('T')[0];
                         $('#c_dob').val(formattedDOB);
                     } else {
-                        $('#c_dob').val(''); 
+                        $('#c_dob').val('');
                     }
                 },
                 error: function (xhr, status, error) {
@@ -296,14 +301,23 @@
             event.preventDefault();
             var form = document.getElementById('employeeForm');
             var formData = new FormData(form);
+            formData.append("c_userid", username);
+
+            
+            var empid = formData.get("c_empid");
+            var shifts = [];
+            var checkboxes = document.querySelectorAll('input[name="c_shift"]:checked');
+            checkboxes.forEach(function (checkbox) {
+                shifts.push(checkbox.value);
+            });
+            formData.delete("c_shift"); // Corrected line
+            formData.append("c_shift", shifts.join(","));
             for (var pair of formData.entries()) {
                 console.log(pair[0] + ': ' + pair[1]);
             }
-            var empid = formData.get("c_empid");
-
             if (empid && empid > 0) {
-                fetch('/KendoComponentAjaxEmp/UpdateEmployee', {
-                    method: 'POST',
+                fetch('https://localhost:7072/ApiUpdate?id=' + username, {
+                    method: 'PUT',
                     body: formData
                 })
                     .then(response => {
@@ -315,7 +329,7 @@
                     .then(data => {
                         console.log(data);
                         alert("Employee updated successfully!");
-                        window.location.href = '/KendoComponentAjaxEmp/Index';
+                        window.location.href = '/KendoComponentApiEmp/Index';
                     })
                     .catch(error => {
                         console.error('Error updated employee:', error.message);
@@ -323,7 +337,7 @@
                     });
             }
             else {
-                fetch('/KendoComponentAjaxEmp/Addemp', {
+                fetch('https://localhost:7072/ApiAdd', {
                     method: 'POST',
                     body: formData
                 })
@@ -336,7 +350,7 @@
                     .then(data => {
                         console.log(data);
                         alert("Employee Add successfully!");
-                        window.location.href = '/KendoComponentAjaxEmp/Index';
+                        window.location.href = '/KendoComponentApiEmp/Index';
                     })
                     .catch(error => {
                         console.error('Error Add employee:', error.message);
@@ -347,8 +361,8 @@
 
         function deleteEmployee(id) {
             $.ajax({
-                url: '/KendoComponentAjaxEmp/deleteEmployee/' + id,
-                type: 'POST',
+                url: 'https://localhost:7072/delete' + id,
+                type: 'DELETE',
                 success: function (response) {
                     window.location.reload();
                     console.log("Data deleted successfully");

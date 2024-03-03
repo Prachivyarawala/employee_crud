@@ -94,6 +94,16 @@ namespace API.Controllers
         {
             _httpContextAccessor.HttpContext.Session.SetInt32("userid" , id);
             Console.WriteLine("userid sesssion " + _httpContextAccessor.HttpContext.Session.GetInt32("userid"));
+            var existingEmp = _employeeRepositories.FetchoneEmployee();
+            if (existingEmp == null)
+            {
+                return NotFound();
+            }
+
+            if (emp.c_image == null || emp.c_image.Length == 0)
+            {
+                emp.c_image = existingEmp.c_image;
+            }
             if (_employeeRepositories.UpdateEmployee(emp))
             {
                 return Ok(emp);
