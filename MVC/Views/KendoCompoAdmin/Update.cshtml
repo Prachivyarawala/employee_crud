@@ -1,4 +1,4 @@
-@model API.Models.Employee
+@model API.Models.AdminEmployee
 <!DOCTYPE html>
 <html lang="en">
 
@@ -87,7 +87,7 @@
     <h1 id="title">Update Employee</h1>
     <div class="container">
         <div>
-            <form method="post" id="employeeForm" class="employee-form" asp-action="UpdateEmployee">
+            <form method="post" id="employeeForm" class="employee-form" asp-action="Update">
                 <div>
                     <label class="k-d-inline-block">Employee id:</label>
                     <input type="text" readonly class="form-control" id="c_empid" asp-for="c_empid">
@@ -96,35 +96,21 @@
                     <label class="k-d-inline-block">Employee Name:</label>
                     <input class="form-control" id="c_empname" asp-for="c_empname">
                 </div>
-                <div>
-                    <label>Gender:</label>
-                    <div id="male"></div>
-                    <div id="female"></div>
-                </div>
 
                 <div>
                     <label class="k-d-inline-block">Shift:</label><br>
-                    <input id="morning" name="c_shift" value="Morning" @(Model.c_shift.Contains("Morning") ? "checked" : "")><label for="morning">Morning</label>
-                    <input id="afternoon" name="c_shift" value="Afternoon" @(Model.c_shift.Contains("Afternoon") ? "checked" : "")><label for="afternoon">Afternoon</label>
+                    <input id="morning" asp-for="c_shift" value="Morning"><label for="morning">Morning</label>
+                    <input id="afternoon" asp-for="c_shift" value="Afternoon"><label for="afternoon">Afternoon</label>
                 </div>
 
                 <div>
                     <label for="c_dept_id" class="k-d-inline-block">Department:</label>
-                    <select class="form-control" id="c_dept_id" name="c_dept_id">
+                    <select class="form-control" id="c_dept_id" asp-for="c_dept_id">
                         <option value="">Select Department</option>
                     </select>
                 </div>
 
-                <div>
-                    <label for="c_image" class="k-d-inline-block">Image:</label>
-                    <input class="form-control" id="file" name="file" type="file">
-                    <div id="image"></div>
-                </div>
-
-                <div>
-                    <label for="c_dob" class="k-d-inline-block">Date of Birth:</label>
-                    <input class="form-control" id="c_dob" asp-for="c_dob">
-                </div>
+                
                 <button type="submit" class="btn btn-primary" kendoButton>Submit</button>
             </form>
         </div>
@@ -157,13 +143,14 @@
                 },
                 sort: { field: "c_deptname", dir: "asc" }
             });
+            $("#c_empid").kendoTextBox({
+                placeholder: "Id"
+            });
 
             $("#c_empname").kendoTextBox({
                 placeholder: "Enter Name "
             });
-            $('<input type="radio" name="c_enpgender" value="Male"/> Male<br>').appendTo("#male");
-            $('<input type="radio" name="c_enpgender" value="Female"/> Female<br>').appendTo("#female");
-
+           
             $('#morning').kendoCheckBox();
             $('#afternoon').kendoCheckBox();
 
@@ -174,43 +161,13 @@
                 dataSource: deptDataSource
             });
 
-            $("#c_dob").kendoDateTimePicker({
-                dateInput: true
-            });
+          
 
-
-            imageUploadEditor(); // Call the function after it's defined
 
         });
 
-        function imageUploadEditor() {
-            $("#file").kendoUpload({
-                multiple: false,
-                validation: {
-                    allowedExtensions: [".jpg", ".png", ".jpeg"]
-                },
-                select: imageNameChange
-            });
-            $('<input type="hidden" id="c_image" name="c_image" data-bind="value:c_image"  /> ').appendTo("#image");
-        }
-
-        function imageNameChange(e) {
-            $.each(e.files, function (index, value) {
-                var fileNameWithPath = "/images/" + value.name;
-                $("#c_image").val(fileNameWithPath).change();
-                console.log("c_image   " + $("#c_image").val());
-                var formData = new FormData();
-                formData.append("file", value.rawFile);
-                $.ajax({
-                    url: "/KendoComponentEmp/SaveImage",
-                    type: "POST",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                });
-            });
-        }
+        
     </script>
 </body>
 
-</html> 
+</html>

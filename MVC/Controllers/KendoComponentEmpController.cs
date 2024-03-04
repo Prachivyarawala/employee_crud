@@ -93,6 +93,16 @@ namespace MVC.Controllers
         [HttpPost]
         public IActionResult UpdateEmployee(Employee? emp=null)
         {
+            var existingEmp = _employeeRepositories.FetchoneEmployee();
+            if (existingEmp == null)
+            {
+                return NotFound();
+            }
+
+            if (emp.c_image == null || emp.c_image.Length == 0)
+            {
+                emp.c_image = existingEmp.c_image;
+            }
             var shift = Request.Form["c_shift"].ToList();
             emp.c_shift = string.Join(", ", shift);
             if (_employeeRepositories.UpdateEmployee(emp))
