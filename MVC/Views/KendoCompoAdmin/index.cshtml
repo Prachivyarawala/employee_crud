@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        html {
+            font-size: 14px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+    </style>
+    <title></title>
+
+    <h2>Kendo View</h2>
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2021.2.616/styles/kendo.common.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2021.2.616/styles/kendo.default.min.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2021.2.616/js/kendo.all.min.js"></script>
+
+
+</head>
+
+<body>
+   
+    
+
+        <h1>Your all Details</h1>
+        <div id="example">
+            <div id="grid"></div>
+            <script>
+                $(document).ready(function () {
+                    $("#grid").kendoGrid({
+                        dataSource: {
+                            transport: {
+                                read: {
+                                    url: "https://localhost:7192/KendoAdminMVC/getAllEmployee",
+                                    dataType: "json" // Specify data type
+                                }
+                            },
+                            schema: {
+                                model: {
+                                    id: "c_empid",
+                                    fields: {
+                                        c_empid: { type: "number", editable: false, nullable: false },
+                                        c_empname: { type: "string", validation: { required: true } },
+                                        
+                                        c_shift: { type: "string", validation: { required: true } },
+                                        
+                                        c_dept_id: { type: "number" }
+                                    }
+                                }
+                            }
+                        },
+                        columns: [
+                            { field: "c_empid", title: "Employee ID" },
+                            { field: "c_empname", title: "Employee Name" },
+                            { field: "c_shift", title: "Shift" },
+                            { field: "c_dept_id", title: "Department" }
+
+                        ]
+                    });
+                });
+            </script>
+        </div>
+        <br>
+      
+        <form asp-action="UpdateEmployee" asp-controller="KendoCompoAdmin" method="get">
+            <input type="hidden" name="id" value="@Model.c_empid" />
+            <button type="submit" class="btn btn-primary">Edit</button>
+        </form>
+
+    
+
+</body>
+
+</html>
