@@ -100,7 +100,7 @@ namespace MVC.Controllers
             var session = _httpContextAccessor.HttpContext.Session;
             session.Clear();
             ViewBag.IsAuthenticated = false;
-            return RedirectToAction("Index", "User");
+            return RedirectToAction("Login", "User");
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
