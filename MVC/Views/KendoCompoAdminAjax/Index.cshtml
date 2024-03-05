@@ -50,7 +50,7 @@
 
                 <div>
                     <label class="k-d-inline-block">Shift:</label><br>
-                    <input id="morning" name="shift" value="Morning" ><label for="morning">Morning</label>
+                    <input id="morning" name="shift" value="Morning"><label for="morning">Morning</label>
                     <input id="afternoon" name="shift" value="Afternoon"><label for="afternoon">Afternoon</label>
                 </div>
 
@@ -157,8 +157,11 @@
                     shift.forEach(function (shift) {
                         $('input[name="shift"][value="' + shift + '"]').prop('checked', true);
                     });
-                    $('#c_dept_id').val(data.c_dept_id);
-                    $('#c_dept_id').change();
+                    // Set the value of the dropdown list
+                    var dropdown = $("#c_dept_id").data("kendoDropDownList");
+                    dropdown.value(data.c_dept_id);  // Assuming data.c_dept_id is the correct department ID
+
+                    console.log("dept id : " + data.c_dept_id);
                 }
             });
         }

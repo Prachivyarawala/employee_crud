@@ -63,7 +63,7 @@ namespace MVC.Controllers
         {
             Console.WriteLine("call : " + employee.c_dept_id);
             var shift = Request.Form["c_shift"].ToList();
-            employee.c_shift = string.Join(", ", shift);
+            employee.c_shift = string.Join(",", shift);
             if (_Adminrepo.UpdateEmployee(employee))
             {
                 return RedirectToAction("Index");

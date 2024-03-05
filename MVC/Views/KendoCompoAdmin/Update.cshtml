@@ -87,7 +87,7 @@
     <h1 id="title">Update Employee</h1>
     <div class="container">
         <div>
-            <form method="post" id="employeeForm" class="employee-form" asp-action="Update">
+            <form method="post" id="employeeForm" class="employee-form" asp-controller= "KendoCompoAdmin" asp-action="Update">
                 <div>
                     <label class="k-d-inline-block">Employee id:</label>
                     <input type="text" readonly class="form-control" id="c_empid" asp-for="c_empid">

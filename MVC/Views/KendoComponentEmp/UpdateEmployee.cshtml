@@ -161,8 +161,8 @@
             $("#c_empname").kendoTextBox({
                 placeholder: "Enter Name "
             });
-            $('<input type="radio" name="c_enpgender" value="Male"/> Male<br>').appendTo("#male");
-            $('<input type="radio" name="c_enpgender" value="Female"/> Female<br>').appendTo("#female");
+            $('<input type="radio" asp-for="c_enpgender" value="Male"/> Male<br>').appendTo("#male");
+            $('<input type="radio" asp-for="c_enpgender" value="Female"/> Female<br>').appendTo("#female");
 
             $('#morning').kendoCheckBox();
             $('#afternoon').kendoCheckBox();
@@ -171,7 +171,8 @@
                 filter: "contains",
                 dataTextField: "c_deptname",
                 dataValueField: "c_deptid",
-                dataSource: deptDataSource
+                dataSource: deptDataSource,
+                value: "@Model.c_dept_id"
             });
 
             $("#c_dob").kendoDateTimePicker({
