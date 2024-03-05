@@ -152,7 +152,7 @@ namespace API.Controllers
             HttpContext.Session.SetInt32("userid", emp.c_userid.GetValueOrDefault());
 
             _employeeRepositories.addemp(emp);
-            return Ok();
+            return Ok(emp);
             // return BadRequest(new { success = false, message = "Failed to add city" });
         }
 
