@@ -51,7 +51,7 @@
                         dataType: "json",
                         data: function (data) {
                             // Convert the date field to the correct format
-                            data.c_dob = kendo.toString(data.c_dob, "yyyy-MM-dd");
+                            data.c_dob = kendo.toString(data.c_dob, "dd/MM/yyyy");
                             return data;
                         }
                     },
