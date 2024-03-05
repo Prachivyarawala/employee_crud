@@ -99,13 +99,13 @@
 
                 <div>
                     <label class="k-d-inline-block">Shift:</label><br>
-                    <input id="morning" asp-for="c_shift" value="Morning"><label for="morning">Morning</label>
-                    <input id="afternoon" asp-for="c_shift" value="Afternoon"><label for="afternoon">Afternoon</label>
+                    <input id="morning" name="c_shift" value="Morning" @(Model.c_shift.Contains("Morning") ? "checked" : "")><label for="morning">Morning</label>
+                    <input id="afternoon" name="c_shift" value="Afternoon" @(Model.c_shift.Contains("Afternoon") ? "checked" : "")><label for="afternoon">Afternoon</label>
                 </div>
 
                 <div>
                     <label for="c_dept_id" class="k-d-inline-block">Department:</label>
-                    <select class="form-control" id="c_dept_id" asp-for="c_dept_id">
+                    <select class="form-control" id="c_dept_id" namer="c_dept_id">
                         <option value="">Select Department</option>
                     </select>
                 </div>
