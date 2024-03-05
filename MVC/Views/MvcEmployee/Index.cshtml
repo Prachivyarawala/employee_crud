@@ -236,8 +236,8 @@
 
         function deleteEmployee(id) {
             $.ajax({
-                url: '/AjaxEmployee/deleteEmployee/' + id,
-                type: 'POST',
+                url: 'https://localhost:7072/' + id,
+                type: 'DELETE',
                 success: function (response) {
                     window.location.reload();
                     console.log("Data deleted successfully");

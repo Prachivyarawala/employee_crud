@@ -35,7 +35,7 @@ namespace API.Controllers
         [HttpPut("UpdateEmployee")]
         public IActionResult UpdateEmployee(int id, [FromForm] Employee? emp = null, IFormFile? file = null)
         {
-            _httpContextAccessor.HttpContext.Session.SetInt32("userid" , emp.c_userid.GetValueOrDefault());
+            _httpContextAccessor.HttpContext.Session.SetInt32("userid", emp.c_userid.GetValueOrDefault());
             var existingEmp = _employeeRepositories.FetchoneEmployee();
             Console.WriteLine("existing image: " + emp.c_image);
             if (existingEmp == null)
@@ -94,7 +94,7 @@ namespace API.Controllers
         [HttpPut("ApiUpdate")]
         public IActionResult UpdateEmp(int id, [FromForm] Employee? emp = null)
         {
-            _httpContextAccessor.HttpContext.Session.SetInt32("userid" , id);
+            _httpContextAccessor.HttpContext.Session.SetInt32("userid", id);
             Console.WriteLine("userid sesssion " + _httpContextAccessor.HttpContext.Session.GetInt32("userid"));
             var existingEmp = _employeeRepositories.FetchoneEmployee();
             if (existingEmp == null)
@@ -198,12 +198,11 @@ namespace API.Controllers
         }
 
 
-        [HttpDelete("delete{id}")]
+        [HttpDelete("{id}")]
         public IActionResult DeleteEmployee(int id)
         {
             _employeeRepositories.DeletetEmployee(id);
-            return Ok();
-
+            return Ok(id);
         }
     }
 }
