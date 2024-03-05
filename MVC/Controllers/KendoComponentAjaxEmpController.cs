@@ -90,11 +90,13 @@ namespace MVC.Controllers
 
             return BadRequest(new { success = false, message = "Failed to update Employee" });
         }
+        [HttpPost]
         public IActionResult DeleteEmployee(int id)
         {
             _employeeRepositories.DeletetEmployee(id);
             return Ok();
         }
+
         [HttpPost]
         public IActionResult SaveImage(IFormFile file)
         {

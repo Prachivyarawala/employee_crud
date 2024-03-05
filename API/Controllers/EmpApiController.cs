@@ -35,24 +35,26 @@ namespace API.Controllers
         [HttpPut("UpdateEmployee")]
         public IActionResult UpdateEmployee(int id, [FromForm] Employee? emp = null, IFormFile? file = null)
         {
-            _httpContextAccessor.HttpContext.Session.SetInt32("userid" , id);
+            _httpContextAccessor.HttpContext.Session.SetInt32("userid" , emp.c_userid.GetValueOrDefault());
             var existingEmp = _employeeRepositories.FetchoneEmployee();
+            Console.WriteLine("existing image: " + emp.c_image);
             if (existingEmp == null)
             {
                 return NotFound();
             }
 
-            Console.WriteLine("empid : " + emp.c_empid);
-            Console.WriteLine("empname : " + emp.c_empname);
-            Console.WriteLine("emp gender : " + emp.c_enpgender);
-            Console.WriteLine("emp shift : " + emp.c_shift);
-            Console.WriteLine("emp dob : " + emp.c_dob);
-            Console.WriteLine("emp dept id : " + emp.c_dept_id);
+            // Console.WriteLine("empid : " + emp.c_empid);
+            // Console.WriteLine("empname : " + emp.c_empname);
+            // Console.WriteLine("emp gender : " + emp.c_enpgender);
+            // Console.WriteLine("emp shift : " + emp.c_shift);
+            // Console.WriteLine("emp dob : " + emp.c_dob);
+            // Console.WriteLine("emp dept id : " + emp.c_dept_id);
 
             if (file == null || file.Length == 0)
             {
                 Console.WriteLine("nulllllllllll");
-                // emp.c_image = existingEmp.c_image;
+                emp.c_image = existingEmp.c_image;
+                Console.WriteLine("existing image: " + emp.c_image);
             }
             else
             {

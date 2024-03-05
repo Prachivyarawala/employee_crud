@@ -128,8 +128,8 @@
     <td>
         <button type="button" onclick='loadData( @Context.Session.GetInt32("userid") )'
             class="btn btn-primary">Edit</button>
-        <button type="button" onclick='deleteEmployee( @Context.Session.GetInt32("userid"))'
-            class="btn btn-danger">Delete</button>
+        <button type="button" onclick="deleteEmployee(dataItem.c_empid)" class="btn btn-danger">Delete</button>
+        class="btn btn-danger">Delete</button>
     </td>
     <br>
     <div class="container">
@@ -283,7 +283,7 @@
                         var formattedDOB = dob.toISOString().split('T')[0];
                         $('#c_dob').val(formattedDOB);
                     } else {
-                        $('#c_dob').val(''); 
+                        $('#c_dob').val('');
                     }
                 },
                 error: function (xhr, status, error) {
@@ -347,7 +347,7 @@
 
         function deleteEmployee(id) {
             $.ajax({
-                url: '/KendoComponentAjaxEmp/deleteEmployee/' + id,
+                url: '/KendoComponentAjaxEmp/DeleteEmployee/' + id,
                 type: 'POST',
                 success: function (response) {
                     window.location.reload();
