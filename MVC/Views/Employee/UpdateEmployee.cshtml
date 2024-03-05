@@ -91,10 +91,10 @@
         var formData = new FormData(form);
 
         var shifts = [];
-        $('input[name="shift"]:checked').each(function () {
+        $('input[name="c_shift"]:checked').each(function () {
             shifts.push($(this).val());
         });
-
+        formData.delete("c_shift");
         formData.append("c_shift", shifts.join(','));
         console.log(formData);
 
