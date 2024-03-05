@@ -131,7 +131,7 @@
     <td>
         <button type="button" onclick='loadData( @Context.Session.GetInt32("userid") )'
             class="btn btn-primary">Edit</button>
-        <button type="button" onclick='deleteEmployee(@Model.c_empid)' class="btn btn-danger">Delete</button>
+        @* <button type="button" onclick='deleteEmployee()' class="btn btn-danger">Delete</button> *@
     </td>
     <br>
     <div class="container">
@@ -281,7 +281,7 @@
                         $('input[name="c_shift"][value="' + shift + '"]').prop('checked', true);
                     });
                     $('#c_dept_id').val(data.c_dept_id);
-                    $('#c_dept_id').change();
+                    @* $('#c_dept_id').change(); *@
                     $('#c_image').attr('src', data.c_image); // Display the image
 
                     if (data.c_dob) {
