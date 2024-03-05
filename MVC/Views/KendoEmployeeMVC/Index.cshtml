@@ -34,7 +34,12 @@
                     create: {
                         url: "https://localhost:7192/KendoEmployeeMVC/AddEmployee",
                         type: "POST",
-                        dataType: "json"
+                        dataType: "json",
+                        data: function (data) {
+                            // Convert the date field to the correct format
+                            data.c_dob = kendo.toString(data.c_dob, "dd/MM/yyyy");
+                            return data;
+                        }
                     },
                     destroy: {
                         url: function (data) {
@@ -99,7 +104,7 @@
                             checkboxWrapper.kendoCheckBoxGroup({
                                 items: [
                                     { label: "Morning", value: "Morning" },
-                                    { label: "Evening", value: "Evening" }
+                                    { label: "Afternoon", value: "Afternoon" }
                                 ],
                                 layout: "horizontal"
                             });
