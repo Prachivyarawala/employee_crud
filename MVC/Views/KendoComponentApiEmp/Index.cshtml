@@ -79,8 +79,6 @@
 </head>
 
 <body>
-    <h1>Welcome, @Context.Session.GetInt32("userid"): @Context.Session.GetString("username")!</h1>
-
 
     <h1>Your all Details</h1>
     <div id="example">
@@ -133,8 +131,7 @@
     <td>
         <button type="button" onclick='loadData( @Context.Session.GetInt32("userid") )'
             class="btn btn-primary">Edit</button>
-        <button type="button" onclick='deleteEmployee(@Model.c_empid)'
-            class="btn btn-danger">Delete</button>
+        <button type="button" onclick='deleteEmployee(@Model.c_empid)' class="btn btn-danger">Delete</button>
     </td>
     <br>
     <div class="container">
@@ -224,12 +221,15 @@
                 dataTextField: "c_deptname",
                 dataValueField: "c_deptid",
                 dataSource: deptDataSource
+                @* value : "@Model.c_dept_id" *@
             });
 
-           $("#c_dob").kendoDateTimePicker({
-    dateInput: true,
-    format: "dd/MM/yyyy"
-});
+            var currentDate = new Date();
+            $("#c_dob").kendoDateTimePicker({
+                dateInput: true,
+                min: currentDate,
+                format: "dd/MM/yyyy" 
+            });
 
 
 
@@ -305,7 +305,7 @@
             var formData = new FormData(form);
             formData.append("c_userid", username);
 
-            
+
             var empid = formData.get("c_empid");
             var shifts = [];
             var checkboxes = document.querySelectorAll('input[name="c_shift"]:checked');
