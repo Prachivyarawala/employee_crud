@@ -226,9 +226,11 @@
                 dataSource: deptDataSource
             });
 
-            $("#c_dob").kendoDateTimePicker({
-                dateInput: true
-            });
+           $("#c_dob").kendoDateTimePicker({
+    dateInput: true,
+    format: "dd/MM/yyyy"
+});
+
 
 
             imageUploadEditor(); // Call the function after it's defined
