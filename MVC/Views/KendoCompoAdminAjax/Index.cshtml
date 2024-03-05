@@ -1,0 +1,220 @@
+@model API.Models.AdminEmployee
+
+@{
+    ViewData["Title"] = "Employee List";
+}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2022.1.301/styles/kendo.default-v2.min.css" />
+    <style>
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2022.1.301/js/kendo.all.min.js"></script>
+</head>
+
+
+<div class="container">
+    <h1 class="mt-5 mb-4">Employee List</h1>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered" id="EmpTable">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Employee ID</th>
+                    <th>Name</th>
+                    <th>Shift</th>
+                    <th>Department</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+    <h1 id="title">Update Employee</h1>
+    <div class="container">
+        <div>
+            <form method="post" id="employeeForm" class="employee-form" asp-action="Update">
+                <div>
+                    <label class="k-d-inline-block">Employee id:</label>
+                    <input type="text" readonly class="form-control" id="c_empid" asp-for="c_empid">
+                </div>
+                <div>
+                    <label class="k-d-inline-block">Employee Name:</label>
+                    <input class="form-control" id="c_empname" asp-for="c_empname">
+                </div>
+
+                <div>
+                    <label class="k-d-inline-block">Shift:</label><br>
+                    <input id="morning" name="shift" value="Morning" ><label for="morning">Morning</label>
+                    <input id="afternoon" name="shift" value="Afternoon"><label for="afternoon">Afternoon</label>
+                </div>
+
+                <div>
+                    <label for="c_dept_id" class="k-d-inline-block">Department:</label>
+                    <select class="form-control" id="c_dept_id" asp-for="c_dept_id">
+                        <option value="">Select Department</option>
+                    </select>
+                </div>
+                <br><br>
+
+                <button type="submit" class="btn btn-primary" kendoButton>Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2024.1.130/js/kendo.all.min.js"></script>
+
+
+    <script>
+        $(document).ready(function () {
+            loadEmp();
+            var deptDataSource = new kendo.data.DataSource({
+                transport: {
+                    read: {
+                        url: "/KendoCompoAdminAjax/GetAllDept", // Endpoint to fetch departments from your database
+                        dataType: "json"
+                    }
+                },
+                schema: {
+                    data: function (response) {
+                        return response;
+                    },
+                    model: {
+                        id: "c_deptid", // The field in your department data representing the department id
+                        fields: {
+                            c_deptid: { type: "number" }, // Define the data type for deptid
+                            c_deptname: { type: "string" } // Define the data type for deptname
+                        }
+                    }
+                },
+                sort: { field: "c_deptname", dir: "asc" }
+            });
+
+            $("#c_empid").kendoTextBox({
+                placeholder: "Id"
+            });
+
+            $("#c_empname").kendoTextBox({
+                placeholder: "Enter Name "
+            });
+
+            $('#morning').kendoCheckBox();
+            $('#afternoon').kendoCheckBox();
+
+            $("#c_dept_id").kendoDropDownList({
+                filter: "contains",
+                dataTextField: "c_deptname",
+                dataValueField: "c_deptid",
+                dataSource: deptDataSource
+            });
+
+
+        });
+
+
+
+        function loadEmp() {
+            $.ajax({
+                url: '/KendoCompoAdminAjax/GetAllEmployee',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    var EmpTable = $('#EmpTable tbody');
+                    EmpTable.empty();
+                    data.forEach(function (emp) {
+                        var row = `<tr>
+                        <td>${emp.c_empid}</td>
+                        <td>${emp.c_empname}</td>
+                        <td>${emp.c_shift}</td>
+                        <td>${emp.c_deptname.c_deptname}</td>
+                        <td>
+                            <button type="button" onclick="loadEmployee(${emp.c_empid})" class="btn btn-primary">Edit</button>
+                        </td>
+                    </tr>`;
+                        EmpTable.append(row);
+                    });
+                }
+            });
+        }
+
+
+        function loadEmployee(employeeId) {
+            $.ajax({
+                url: '/KendoCompoAdminAjax/fetchEmpData/' + employeeId,
+                type: 'GET',
+                success: function (data) {
+                    console.log(data);
+                    $('#c_empid').val(data.c_empid);
+                    $('#c_empname').val(data.c_empname);
+                    var shift = data.c_shift.split(',');
+                    shift.forEach(function (shift) {
+                        $('input[name="shift"][value="' + shift + '"]').prop('checked', true);
+                    });
+                    $('#c_dept_id').val(data.c_dept_id);
+                    $('#c_dept_id').change();
+                }
+            });
+        }
+
+        document.getElementById('employeeForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            var form = document.getElementById('employeeForm');
+            var formData = new FormData(form);
+
+            var shifts = [];
+            $('input[name="shift"]:checked').each(function () {
+                shifts.push($(this).val());
+            });
+
+            formData.append("c_shift", shifts.join(','));
+            console.log(formData);
+
+
+            for (var pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
+
+            fetch('/KendoCompoAdminAjax/EditEmployee', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to updated employee.');
+                    }
+                })
+                .then(data => {
+                    console.log(data);
+                    alert("Employee updated successfully!");
+                    window.location.href = '/KendoCompoAdminAjax/Index';
+                })
+                .catch(error => {
+                    console.error('Error updated employee:', error.message);
+                    alert("Failed to Update employee.");
+                });
+        });
+
+
+        var inactivityTimeout;
+
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimeout);
+            inactivityTimeout = setTimeout(function () {
+                window.location.href = '/User/Login'; // Redirect to the login page after inactivity
+            }, 300000); // 5 minutes timeout (300,000 milliseconds)
+        }
+
+        // Attach event handlers for user activity (e.g., mousemove, keydown)
+        document.addEventListener('mousemove', resetInactivityTimer);
+        document.addEventListener('keydown', resetInactivityTimer);
+
+        // Initialize the inactivity timer on page load
+        resetInactivityTimer();
+    </script>

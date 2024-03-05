@@ -92,7 +92,7 @@
                             });
                         }
                     },
-                    { command: ["edit", "destroy"], title: "&nbsp;", width: "200px" }
+                    { command: ["edit"], title: "&nbsp;", width: "200px" }
                 ],
                 editable: "popup",
                 toolbar: ["create"],
@@ -102,7 +102,7 @@
             });
 
             dataSource.bind("requestEnd", function (e) {
-                if (e.type === "create" || e.type === "update" || e.type === "destroy") {
+                if (e.type === "create" || e.type === "update" ) {
                     dataSource.read();
                 }
             });
