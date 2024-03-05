@@ -148,7 +148,7 @@ namespace API.Controllers
             emp.c_image = imageUrl;
 
             var shift = Request.Form["c_shift"].ToList();
-            emp.c_shift = string.Join(", ", shift);
+            emp.c_shift = string.Join(",", shift);
             HttpContext.Session.SetInt32("userid", emp.c_userid.GetValueOrDefault());
 
             _employeeRepositories.addemp(emp);
