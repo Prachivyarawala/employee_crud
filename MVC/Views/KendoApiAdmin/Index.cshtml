@@ -97,17 +97,16 @@
                             });
                         }
                     },
-                    { command: ["edit", "destroy"], title: "&nbsp;", width: "200px" }
+                    { command: ["edit"], title: "&nbsp;", width: "200px" }
                 ],
                 editable: "popup",
-                toolbar: ["create"],
                 pageable: true,
                 sortable: true,
                 filterable: true,
             });
 
             dataSource.bind("requestEnd", function (e) {
-                if (e.type === "create" || e.type === "update" || e.type === "destroy") {
+                if (e.type === "update") {
                     dataSource.read();
                 }
             });
