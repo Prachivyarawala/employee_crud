@@ -128,7 +128,7 @@
     <td>
         <button type="button" onclick='loadData( @Context.Session.GetInt32("userid") )'
             class="btn btn-primary">Edit</button>
-        <button type="button" onclick="deleteEmployee(dataItem.c_empid)" class="btn btn-danger">Delete</button>
+        <button type="button" onclick="deleteEmployee(@Model.c_empid)" class="btn btn-danger">Delete</button>
     </td>
     <br>
     <div class="container">
@@ -217,11 +217,14 @@
                 filter: "contains",
                 dataTextField: "c_deptname",
                 dataValueField: "c_deptid",
-                dataSource: deptDataSource
+                dataSource: deptDataSource,
+                value : "@Model.c_dept_id"
             });
-
+            var currentDate = new Date();
             $("#c_dob").kendoDateTimePicker({
-                dateInput: true
+                dateInput: true,
+                min: currentDate,
+                format: "dd/MM/yyyy" 
             });
 
 

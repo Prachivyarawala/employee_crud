@@ -133,7 +133,7 @@
     <td>
         <button type="button" onclick='loadData( @Context.Session.GetInt32("userid") )'
             class="btn btn-primary">Edit</button>
-        <button type="button" onclick='deleteEmployee( @Context.Session.GetInt32("userid"))'
+        <button type="button" onclick='deleteEmployee(@Model.c_empid)'
             class="btn btn-danger">Delete</button>
     </td>
     <br>
