@@ -49,7 +49,7 @@
 
                     destroy: {
                         url: function (data) {
-                            return "https://localhost:7072/delete" + data.c_empid;
+                            return "https://localhost:7072/"+data.c_empid;
                         },
                         type: "DELETE",
                         dataType: "json"
